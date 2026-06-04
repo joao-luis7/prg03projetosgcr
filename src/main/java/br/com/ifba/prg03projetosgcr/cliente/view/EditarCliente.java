@@ -4,19 +4,34 @@
  */
 package br.com.ifba.prg03projetosgcr.cliente.view;
 
+import org.springframework.stereotype.Component;
+
 /**
  *
  * @author joaol
  */
+
+@Component
 public class EditarCliente extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(EditarCliente.class.getName());
-
+    
+    private ListarClientes listarClientes;
     /**
      * Creates new form EditarCliente
      */
     public EditarCliente() {
         initComponents();
+        
+        setLocationRelativeTo(null);
+    }
+    
+    public void setListarClientes(ListarClientes listarClientes){
+        this.listarClientes = listarClientes;
+    }
+    
+    public void preencherCampos(String nomeCliente){
+        txtNome.setText(nomeCliente);
     }
 
     /**
@@ -44,6 +59,8 @@ public class EditarCliente extends javax.swing.JFrame {
         txtRua = new javax.swing.JTextField();
         txtNumero = new javax.swing.JTextField();
         txtPntReferencia = new javax.swing.JTextField();
+        lblDescricao = new javax.swing.JLabel();
+        btnSalvar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -84,14 +101,31 @@ public class EditarCliente extends javax.swing.JFrame {
 
         txtPntReferencia.addActionListener(this::txtPntReferenciaActionPerformed);
 
+        lblDescricao.setFont(new java.awt.Font("Poppins", 0, 10)); // NOI18N
+        lblDescricao.setText("Os espaços não preenchidos seram mantidos como estão.");
+
+        btnSalvar.setBackground(new java.awt.Color(0, 102, 0));
+        btnSalvar.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
+        btnSalvar.setText("Editar");
+        btnSalvar.addActionListener(this::btnSalvarActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(105, Short.MAX_VALUE)
+                .addComponent(lblDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(99, 99, 99))
             .addGroup(layout.createSequentialGroup()
-                .addGap(177, 177, 177)
-                .addComponent(jLabel1)
-                .addContainerGap(224, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(208, 208, 208)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(221, 221, 221)
+                        .addComponent(btnSalvar)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(20, 20, 20)
@@ -129,14 +163,18 @@ public class EditarCliente extends javax.swing.JFrame {
                                 .addComponent(lblNome, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addContainerGap(20, Short.MAX_VALUE)))
+                    .addContainerGap(41, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(30, 30, 30)
+                .addGap(23, 23, 23)
                 .addComponent(jLabel1)
-                .addContainerGap(348, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblDescricao)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 265, Short.MAX_VALUE)
+                .addComponent(btnSalvar)
+                .addGap(42, 42, 42))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(87, 87, 87)
@@ -194,6 +232,18 @@ public class EditarCliente extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPntReferenciaActionPerformed
 
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        // TODO add your handling code here:
+        //salvar alterações
+        javax.swing.JOptionPane.showMessageDialog(this,
+            "Cliente atualizado",
+            "Sucesso", 
+            javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        
+        //fecha tela de edição
+        dispose();
+    }//GEN-LAST:event_btnSalvarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -220,10 +270,12 @@ public class EditarCliente extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSalvar;
     private javax.swing.JCheckBox cbxEnderecoNao;
     private javax.swing.JCheckBox cbxEnderecoSim;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblBairro;
+    private javax.swing.JLabel lblDescricao;
     private javax.swing.JLabel lblNome;
     private javax.swing.JLabel lblNumero;
     private javax.swing.JLabel lblPntReferencia;

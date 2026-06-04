@@ -5,15 +5,19 @@
 package br.com.ifba.prg03projetosgcr.cliente.view;
 
 import javax.swing.JFrame;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author joaol
  */
+@Component
+@Scope("prototype") // Diz ao Spring para criar uma nova instância a cada pedido
 public class CadastrarClientes extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CadastrarClientes.class.getName());
-
+    private ListarClientes listarClientes;
     /**
      * Creates new form CadastrarClientes
      */
@@ -21,7 +25,10 @@ public class CadastrarClientes extends javax.swing.JFrame {
         initComponents();
         
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    
+    public void setListarClientes(ListarClientes listarClientes){
+        this.listarClientes = listarClientes;
     }
 
     /**
@@ -93,6 +100,7 @@ public class CadastrarClientes extends javax.swing.JFrame {
 
         btnCadastrarCliente.setBackground(new java.awt.Color(0, 102, 0));
         btnCadastrarCliente.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
+        btnCadastrarCliente.setForeground(new java.awt.Color(255, 255, 255));
         btnCadastrarCliente.setText("Cadastrar Cliente");
         btnCadastrarCliente.addActionListener(this::btnCadastrarClienteActionPerformed);
 
@@ -210,6 +218,13 @@ public class CadastrarClientes extends javax.swing.JFrame {
 
     private void btnCadastrarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarClienteActionPerformed
         // TODO add your handling code here:
+        javax.swing.JOptionPane.showMessageDialog(this,
+            "Cliente Cadastrado com Sucesso", 
+            "Sucesso",
+            javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        
+        //fecha tela de cadastro
+        dispose();
     }//GEN-LAST:event_btnCadastrarClienteActionPerformed
 
     /**

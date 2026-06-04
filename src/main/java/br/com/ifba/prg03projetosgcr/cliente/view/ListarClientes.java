@@ -4,18 +4,30 @@
  */
 package br.com.ifba.prg03projetosgcr.cliente.view;
 
+import br.com.ifba.prg03projetosgcr.cliente.view.components.BotaoCelulaRenderer;
+import br.com.ifba.prg03projetosgcr.cliente.view.components.BotaoCelulaEditor;
 import javax.swing.JPanel;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+
 /**
  *
  * @author joaol
  */
+@Component
 public class ListarClientes extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ListarClientes.class.getName());
-
+    
+    @Autowired
+    private ApplicationContext context;
     public ListarClientes() {
         initComponents();
         
@@ -30,7 +42,69 @@ public class ListarClientes extends javax.swing.JFrame {
         
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-       
+        
+        //zera a qtnd de linhas da tabela para remover as linhas nulas
+        DefaultTableModel modelo = (DefaultTableModel) tblClientes.getModel();
+        modelo.setRowCount(0);
+        
+        //aumenta a altura das linhas da tablea
+        tblClientes.setRowHeight(45);
+        
+        //Configurar a coluna de ações com botoes de editar e deletar
+        configurarColunaAcoes();
+    }
+    
+    private void configurarColunaAcoes(){
+        //criar o renderer personalizado para a coluna acoes 
+        BotaoCelulaRenderer renderer = new BotaoCelulaRenderer(tblClientes);
+        
+        //obter a coluna de acoes
+        TableColumn colunaAcoes = tblClientes.getColumnModel().getColumn(3);
+        colunaAcoes.setCellRenderer(renderer);
+        colunaAcoes.setCellEditor(new BotaoCelulaEditor(tblClientes, this));
+        
+        
+    }
+    
+    public void editarCliente(int linha){
+        //obter os dados da linha
+        Object valorCliente = tblClientes.getValueAt(linha, 0);
+        
+        //criar e configurar a tela de edição
+        EditarCliente telaEditar = context.getBean(EditarCliente.class);
+        telaEditar.preencherCampos(valorCliente != null ? valorCliente.toString() : "");
+        telaEditar.setListarClientes(this);
+        telaEditar.setVisible(true);
+
+    }
+    
+    public void deletarCliente(int linha){
+        Object valorCliente = tblClientes.getValueAt(linha, 0);
+        
+        int confirmacao = javax.swing.JOptionPane.showConfirmDialog(this, 
+            "Tem ceteza que deseja deletar o cliente: " + valorCliente + "?", 
+            "Confirmar Exclusão", 
+            javax.swing.JOptionPane.YES_NO_CANCEL_OPTION,
+            javax.swing.JOptionPane.QUESTION_MESSAGE);
+        
+        if(confirmacao == javax.swing.JOptionPane.YES_OPTION){
+            //remove a linha da tabela
+            DefaultTableModel modelo = (DefaultTableModel) tblClientes.getModel();
+            modelo.removeRow(linha);
+            
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Cliente deletado com sucesso",
+                "Sucesso",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    
+    private void abrirTelaCadastro(){
+        // como a tela é prototype, o context.getBean cria uma tela zerada toda vez
+        CadastrarClientes telaCadastro = context.getBean(CadastrarClientes.class);
+        telaCadastro.setListarClientes(this);
+        telaCadastro.setVisible(true);
+
     }
 
     /**
@@ -77,6 +151,7 @@ public class ListarClientes extends javax.swing.JFrame {
 
         btnCadastrarCliente.setBackground(new java.awt.Color(0, 102, 51));
         btnCadastrarCliente.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
+        btnCadastrarCliente.setForeground(new java.awt.Color(255, 255, 255));
         btnCadastrarCliente.setText("Cadastrar Cliente");
         btnCadastrarCliente.addActionListener(this::btnCadastrarClienteActionPerformed);
 
@@ -121,6 +196,8 @@ public class ListarClientes extends javax.swing.JFrame {
 
     private void btnCadastrarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarClienteActionPerformed
         // TODO add your handling code here:
+        abrirTelaCadastro();
+
     }//GEN-LAST:event_btnCadastrarClienteActionPerformed
 
     private void txtPesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPesquisaActionPerformed
