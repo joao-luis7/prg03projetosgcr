@@ -4,6 +4,7 @@
  */
 package br.com.ifba.prg03projetosgcr.cliente.view;
 
+import br.com.ifba.prg03projetosgcr.cliente.controller.ClienteController;
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import br.com.ifba.prg03projetosgcr.cliente.service.ClienteService;
 import br.com.ifba.prg03projetosgcr.cliente.view.components.BotaoCelulaRenderer;
@@ -34,7 +35,7 @@ public class ListarClientes extends javax.swing.JFrame {
     @Autowired
     private ApplicationContext context;
     @Autowired
-    private ClienteService clienteService;
+    private ClienteController clienteController;
     
     //lista para gaurdar a referencia dos clientes vindo do banco
     private List<Cliente> clientesCadastrados = new ArrayList<>();
@@ -64,6 +65,33 @@ public class ListarClientes extends javax.swing.JFrame {
         
         //Configurar a coluna de ações com botoes de editar e deletar
         configurarColunaAcoes();
+        
+        //apaga o "Pesquise por nome..." ao clicar e recoloca se sair sem digitar nada
+        txtPesquisa.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent evt){
+                if(txtPesquisa.getText().equals("Pesquise por nome...")){
+                    txtPesquisa.setText(""); //limpa o campo
+                }
+            }
+            
+            @Override
+            public void focusLost(java.awt.event.FocusEvent evt){
+                if(txtPesquisa.getText().trim().isEmpty()){
+                    txtPesquisa.setText("Pesquise por nome..."); //volta para o texto padrao
+                    atualizarTabela(); //recarrega a tabela completa
+                }
+            }
+        });
+        
+        //faz pesquisa dinamica atualiza a tabela cada vez que uma tecla é acionada
+        txtPesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt){
+            //toda vez o usuario usa uma tecla, a tabela filta
+            atualizarTabela();
+            }
+        });
     }
     
     // O @PostConstruct faz com que este método rode automaticamente 
@@ -74,10 +102,18 @@ public class ListarClientes extends javax.swing.JFrame {
         atualizarTabela();
     }
     
-    //busca no banco e preenche a tabela
+    //agbora ele pesquisa por nome, se nao houver nome na pesquisa ele lista todos
     public void atualizarTabela(){
-        clientesCadastrados = clienteService.findAll();
+        String nomeBusca = txtPesquisa.getText().trim();
         
+        //se o campo estiver vazio ou com o texto padrão, busca todos
+        if(nomeBusca.isEmpty() || nomeBusca.equals("Pesquise por nome...")){
+            clientesCadastrados = clienteController.findAll();
+        } else{
+            //se o usuario digitou algo, filtamos
+            clientesCadastrados = clienteController.findByNome(nomeBusca);
+        }
+            
         DefaultTableModel modelo = (DefaultTableModel) tblClientes.getModel();
         modelo.setRowCount(0); //limpa as linhas atuais
         
@@ -128,7 +164,7 @@ public class ListarClientes extends javax.swing.JFrame {
         
         if(confirmacao == javax.swing.JOptionPane.YES_OPTION){
             //deleta do banco usando o id
-            clienteService.delete(clienteSelecionado.getId());
+            clienteController.delete(clienteSelecionado.getId());
             
             //atualiza a tabela
             atualizarTabela();
@@ -243,6 +279,7 @@ public class ListarClientes extends javax.swing.JFrame {
 
     private void txtPesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPesquisaActionPerformed
         // TODO add your handling code here:
+        atualizarTabela();
     }//GEN-LAST:event_txtPesquisaActionPerformed
 
     /**

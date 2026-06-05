@@ -4,6 +4,7 @@
  */
 package br.com.ifba.prg03projetosgcr.cliente.view;
 
+import br.com.ifba.prg03projetosgcr.cliente.controller.ClienteController;
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import br.com.ifba.prg03projetosgcr.cliente.entity.Endereco;
 import br.com.ifba.prg03projetosgcr.cliente.service.ClienteService;
@@ -23,7 +24,7 @@ public class EditarCliente extends javax.swing.JFrame {
     
     private ListarClientes listarClientes;
     @Autowired
-    private ClienteService clienteService;
+    private ClienteController clienteController;
     //variavel para guardar o cliente selecionado 
     private Cliente clienteAtual;
     
@@ -63,7 +64,7 @@ public class EditarCliente extends javax.swing.JFrame {
             txtNumero.setText(cliente.getEndereco().getNumero());
             txtPntReferencia.setText(cliente.getEndereco().getPontoReferencia());
         } else{
-            //caso cliente não tenha endere~ço, limpa os campos
+            //caso cliente não tenha endereço, limpa os campos
             cbxEnderecoNao.setSelected(true);
             txtBairro.setText("");
             txtRua.setText("");
@@ -274,36 +275,7 @@ public class EditarCliente extends javax.swing.JFrame {
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         try{
-            //validação do telefone
-            String telefoneDigitado = txtTelefone.getText();
-            //o comando //D remove tudo que nao for numero
-            String telefoneApenasNumeros = telefoneDigitado.replace("\\D", "");
-            
-            if(telefoneApenasNumeros.length() != 11){
-                JOptionPane.showMessageDialog(this,
-                    "O telefone está incorreto. Ele deve conter o DDD (2 digitos) e o número",
-                    "Telefone Inválido",
-                    JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            
-            //validacao de endereço
-            if (cbxEnderecoSim.isSelected()){
-                //verifica se bairro, rua ou numero sao vazios
-                if(txtBairro.getText().trim().isEmpty() ||
-                    txtRua.getText().trim().isEmpty() ||
-                    txtNumero.getText().trim().isEmpty()){
-                    
-                    JOptionPane.showMessageDialog(this,
-                        "Para cadastrar ou manter o endereço, é obrigatório informar o Bairro, Rua e Número",
-                        "Campos Obrigatórios",
-                        JOptionPane.WARNING_MESSAGE);
-                    
-                    return;
-                }
-            }
-            
-            //so altera se o campo nao estiver vazio
+            // Só altera se o campo não estiver vazio 
             if(!txtNome.getText().trim().isEmpty()){
                 clienteAtual.setNome(txtNome.getText().trim());
             }
@@ -314,13 +286,13 @@ public class EditarCliente extends javax.swing.JFrame {
             // Verifica se a opção de endereço está marcada como Sim
             if (cbxEnderecoSim.isSelected()) {
                 Endereco endereco = clienteAtual.getEndereco();
-                
+
                 // Se o cliente não tinha endereço cadastrado antes, criamos um novo
                 if (endereco == null) {
                     endereco = new Endereco();
                     clienteAtual.setEndereco(endereco);
                 }
-                
+
                 // Aplica a mesma regra de não subscrever se estiver vazio
                 if (!txtBairro.getText().trim().isEmpty()) {
                     endereco.setBairro(txtBairro.getText().trim());
@@ -334,26 +306,34 @@ public class EditarCliente extends javax.swing.JFrame {
                 if (!txtPntReferencia.getText().trim().isEmpty()) {
                     endereco.setPontoReferencia(txtPntReferencia.getText().trim());
                 }
+            } else {
+                // Se o usuário marcou "Não" para o endereço, removemos o vinculo
+                clienteAtual.setEndereco(null); 
             }
             
-            //envia o objeto atualizado ao bacno
-            clienteService.update(clienteAtual);
+            //envia o objeto atualizado ao controller
+            clienteController.update(clienteAtual);
             
-            javax.swing.JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(this,
                     "Cliente atualizado com Sucesso",
                     "Sucesso",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.INFORMATION_MESSAGE);
                     
             //avisa a tela principal para recarregar a tabela com os novos dados
             if(listarClientes != null){
                 listarClientes.atualizarTabela();
             }
             dispose();
-        } catch(Exception e){
+        } catch(RuntimeException ex){
             javax.swing.JOptionPane.showMessageDialog(this,
-                    "Erro ao editar cliente",
-                    "Erro",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
+                    ex.getMessage(),
+                    "Aviso de Validação",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(this,
+                "Erro interno ao atualizar dados do cliente",
+                "Erro",
+                JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
 

@@ -4,6 +4,7 @@
  */
 package br.com.ifba.prg03projetosgcr.cliente.view;
 
+import br.com.ifba.prg03projetosgcr.cliente.controller.ClienteController;
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import br.com.ifba.prg03projetosgcr.cliente.entity.Endereco;
 import br.com.ifba.prg03projetosgcr.cliente.service.ClienteService;
@@ -24,7 +25,7 @@ public class CadastrarClientes extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CadastrarClientes.class.getName());
     private ListarClientes listarClientes;
     @Autowired
-    private ClienteService clienteService;
+    private ClienteController clienteController;
     /**
      * Creates new form CadastrarClientes
      */
@@ -238,24 +239,6 @@ public class CadastrarClientes extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         try{
-            //validação de endereço
-            if(cbxEnderecoSim.isSelected()){
-                //verifica se Bairro, Rua ou numero sao vazios
-                if(txtBairro.getText().trim().isEmpty() ||
-                    txtRua.getText().trim().isEmpty() ||
-                    txtNumero.getText().trim().isEmpty()){
-                    
-                    //mostra avisao na tela
-                    JOptionPane.showMessageDialog(this,
-                            "Para cadastrar o endereço, é obrigatorio informar o bairro, a rua e o número",
-                            "Campos Obrigatórios",
-                            JOptionPane.WARNING_MESSAGE);
-                    
-                    //return para parar a execução do método e não ir pro banco de dados
-                    return;
-                }
-            }
-            
             //cria a nova entidade Cliente
             Cliente cliente = new Cliente();
             cliente.setNome(txtNome.getText());
@@ -263,7 +246,7 @@ public class CadastrarClientes extends javax.swing.JFrame {
             cliente.setAtivo(true);
             cliente.setSaldoDevedor(0.0); //valor inicial
             
-            //se o usuario quer salvar endereco
+            //Verifica se deve acoplar o Endereço
             if(cbxEnderecoSim.isSelected()){
                 Endereco endereco = new Endereco();
                 endereco.setBairro(txtBairro.getText());
@@ -274,8 +257,8 @@ public class CadastrarClientes extends javax.swing.JFrame {
                 cliente.setEndereco(endereco);
             }
             
-            //salva no banco
-            clienteService.save(cliente);
+            //envioa para o controller
+            clienteController.save(cliente);
             
             JOptionPane.showMessageDialog(this, 
                     "Cliente Cadastrado com Sucesso",
@@ -287,22 +270,18 @@ public class CadastrarClientes extends javax.swing.JFrame {
                 listarClientes.atualizarTabela();
             }
             dispose();
+        } catch (RuntimeException ex){
+            //erros de regras de negocio vindo do service
+            JOptionPane.showMessageDialog(this,
+                    ex.getMessage(),
+                    "Aviso de Validação",
+                    JOptionPane.WARNING_MESSAGE);
         } catch (Exception e){
             JOptionPane.showMessageDialog(this,
                     "Erro ao cadastrar cliente",
                     "Erro",
                     JOptionPane.ERROR_MESSAGE);
         }
-        
-        /*
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "Cliente Cadastrado com Sucesso", 
-            "Sucesso",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE);
-        
-        //fecha tela de cadastro
-        dispose();
-        */
     }//GEN-LAST:event_btnCadastrarClienteActionPerformed
 
     private void cbxEnderecoNaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxEnderecoNaoActionPerformed
