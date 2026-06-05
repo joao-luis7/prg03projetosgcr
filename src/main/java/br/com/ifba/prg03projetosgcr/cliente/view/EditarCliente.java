@@ -4,6 +4,10 @@
  */
 package br.com.ifba.prg03projetosgcr.cliente.view;
 
+import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
+import br.com.ifba.prg03projetosgcr.cliente.entity.Endereco;
+import br.com.ifba.prg03projetosgcr.cliente.service.ClienteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,6 +21,11 @@ public class EditarCliente extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(EditarCliente.class.getName());
     
     private ListarClientes listarClientes;
+    @Autowired
+    private ClienteService clienteService;
+    //variavel para guardar o cliente selecionado 
+    private Cliente clienteAtual;
+    
     /**
      * Creates new form EditarCliente
      */
@@ -24,14 +33,43 @@ public class EditarCliente extends javax.swing.JFrame {
         initComponents();
         
         setLocationRelativeTo(null);
+        
+        //cria o grupo de botoes
+        javax.swing.ButtonGroup grupoEndereco = new javax.swing.ButtonGroup();
+        
+        //adiciona as checkboxes ao grupo
+        grupoEndereco.add(cbxEnderecoNao);
+        grupoEndereco.add(cbxEnderecoSim);
+        
     }
     
     public void setListarClientes(ListarClientes listarClientes){
         this.listarClientes = listarClientes;
     }
     
-    public void preencherCampos(String nomeCliente){
-        txtNome.setText(nomeCliente);
+    public void preencherCampos(Cliente cliente){
+        //Salva a referencia do cliente
+        this.clienteAtual = cliente;
+        
+        txtNome.setText(cliente.getNome());
+        txtTelefone.setText(cliente.getTelefone());
+        
+        //verifica se o cliente tem um endereço vinculado
+        if(cliente.getEndereco() != null){
+            cbxEnderecoSim.setSelected(true);
+            txtBairro.setText(cliente.getEndereco().getBairro());
+            txtRua.setText(cliente.getEndereco().getRua());
+            txtNumero.setText(cliente.getEndereco().getNumero());
+            txtPntReferencia.setText(cliente.getEndereco().getPontoReferencia());
+        } else{
+            //caso cliente não tenha endere~ço, limpa os campos
+            cbxEnderecoNao.setSelected(true);
+            txtBairro.setText("");
+            txtRua.setText("");
+            txtNumero.setText("");
+            txtPntReferencia.setText("");
+        }
+        
     }
 
     /**
@@ -62,7 +100,7 @@ public class EditarCliente extends javax.swing.JFrame {
         lblDescricao = new javax.swing.JLabel();
         btnSalvar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         jLabel1.setText("Editar Cliente");
@@ -106,6 +144,7 @@ public class EditarCliente extends javax.swing.JFrame {
 
         btnSalvar.setBackground(new java.awt.Color(0, 102, 0));
         btnSalvar.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
+        btnSalvar.setForeground(new java.awt.Color(255, 255, 255));
         btnSalvar.setText("Editar");
         btnSalvar.addActionListener(this::btnSalvarActionPerformed);
 
@@ -233,15 +272,59 @@ public class EditarCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPntReferenciaActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // TODO add your handling code here:
-        //salvar alterações
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "Cliente atualizado",
-            "Sucesso", 
-            javax.swing.JOptionPane.INFORMATION_MESSAGE);
-        
-        //fecha tela de edição
-        dispose();
+        try{
+            //so altera se o campo nao estiver vazio
+            if(!txtNome.getText().trim().isEmpty()){
+                clienteAtual.setNome(txtNome.getText().trim());
+            }
+            if (!txtTelefone.getText().trim().isEmpty()) {
+                clienteAtual.setTelefone(txtTelefone.getText().trim());
+            }
+
+            // Verifica se a opção de endereço está marcada como Sim
+            if (cbxEnderecoSim.isSelected()) {
+                Endereco endereco = clienteAtual.getEndereco();
+                
+                // Se o cliente não tinha endereço cadastrado antes, criamos um novo
+                if (endereco == null) {
+                    endereco = new Endereco();
+                    clienteAtual.setEndereco(endereco);
+                }
+                
+                // Aplica a mesma regra de não subscrever se estiver vazio
+                if (!txtBairro.getText().trim().isEmpty()) {
+                    endereco.setBairro(txtBairro.getText().trim());
+                }
+                if (!txtRua.getText().trim().isEmpty()) {
+                    endereco.setRua(txtRua.getText().trim());
+                }
+                if (!txtNumero.getText().trim().isEmpty()) {
+                    endereco.setNumero(txtNumero.getText().trim());
+                }
+                if (!txtPntReferencia.getText().trim().isEmpty()) {
+                    endereco.setPontoReferencia(txtPntReferencia.getText().trim());
+                }
+            }
+            
+            //envia o objeto atualizado ao bacno
+            clienteService.update(clienteAtual);
+            
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Cliente atualizado com Sucesso",
+                    "Sucesso",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                    
+            //avisa a tela principal para recarregar a tabela com os novos dados
+            if(listarClientes != null){
+                listarClientes.atualizarTabela();
+            }
+            dispose();
+        } catch(Exception e){
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Erro ao editar cliente",
+                    "Erro",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     /**

@@ -86,7 +86,7 @@
                 <Column editable="false" title="Cliente" type="java.lang.Object"/>
                 <Column editable="false" title="D&#xed;vida Total" type="java.lang.Object"/>
                 <Column editable="false" title="Contato" type="java.lang.Object"/>
-                <Column editable="false" title="A&#xe7;&#xf5;es" type="java.lang.Object"/>
+                <Column editable="true" title="A&#xe7;&#xf5;es" type="java.lang.Object"/>
               </Table>
             </Property>
           </Properties>

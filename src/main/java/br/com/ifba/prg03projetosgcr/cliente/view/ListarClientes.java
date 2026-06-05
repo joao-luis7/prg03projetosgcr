@@ -4,8 +4,11 @@
  */
 package br.com.ifba.prg03projetosgcr.cliente.view;
 
+import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
+import br.com.ifba.prg03projetosgcr.cliente.service.ClienteService;
 import br.com.ifba.prg03projetosgcr.cliente.view.components.BotaoCelulaRenderer;
 import br.com.ifba.prg03projetosgcr.cliente.view.components.BotaoCelulaEditor;
+import jakarta.annotation.PostConstruct;
 import javax.swing.JPanel;
 import java.awt.Dimension;
 import javax.swing.JFrame;
@@ -13,6 +16,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -28,6 +33,13 @@ public class ListarClientes extends javax.swing.JFrame {
     
     @Autowired
     private ApplicationContext context;
+    @Autowired
+    private ClienteService clienteService;
+    
+    //lista para gaurdar a referencia dos clientes vindo do banco
+    private List<Cliente> clientesCadastrados = new ArrayList<>();
+    
+    
     public ListarClientes() {
         initComponents();
         
@@ -54,6 +66,32 @@ public class ListarClientes extends javax.swing.JFrame {
         configurarColunaAcoes();
     }
     
+    // O @PostConstruct faz com que este método rode automaticamente 
+    // APÓS o Spring injetar o ClienteService. Se tentar chamar o 
+    // serviço direto no construtor, vai dar NullPointerException.
+    @PostConstruct
+    public void init(){
+        atualizarTabela();
+    }
+    
+    //busca no banco e preenche a tabela
+    public void atualizarTabela(){
+        clientesCadastrados = clienteService.findAll();
+        
+        DefaultTableModel modelo = (DefaultTableModel) tblClientes.getModel();
+        modelo.setRowCount(0); //limpa as linhas atuais
+        
+        for (Cliente c : clientesCadastrados){
+            //adiciona as colunas: cliente, divida, contato e acoes
+            modelo.addRow(new Object[]{
+                c.getNome(),
+                "R$ " + String.format("%.2f", c.getSaldoDevedor()),
+                c.getTelefone(),
+                "" //cooluna de ações é renderizada pelos botoes
+            });
+        }
+    }
+    
     private void configurarColunaAcoes(){
         //criar o renderer personalizado para a coluna acoes 
         BotaoCelulaRenderer renderer = new BotaoCelulaRenderer(tblClientes);
@@ -67,30 +105,33 @@ public class ListarClientes extends javax.swing.JFrame {
     }
     
     public void editarCliente(int linha){
-        //obter os dados da linha
-        Object valorCliente = tblClientes.getValueAt(linha, 0);
+        Cliente clienteSelecionado = clientesCadastrados.get(linha);    
         
         //criar e configurar a tela de edição
         EditarCliente telaEditar = context.getBean(EditarCliente.class);
-        telaEditar.preencherCampos(valorCliente != null ? valorCliente.toString() : "");
+        telaEditar.preencherCampos(clienteSelecionado);
         telaEditar.setListarClientes(this);
         telaEditar.setVisible(true);
 
     }
     
     public void deletarCliente(int linha){
-        Object valorCliente = tblClientes.getValueAt(linha, 0);
+        //pega o cliente exato da lista
+        Cliente clienteSelecionado = clientesCadastrados.get(linha);
+        
         
         int confirmacao = javax.swing.JOptionPane.showConfirmDialog(this, 
-            "Tem ceteza que deseja deletar o cliente: " + valorCliente + "?", 
+            "Tem ceteza que deseja deletar o cliente: " + clienteSelecionado.getNome() + "?", 
             "Confirmar Exclusão", 
             javax.swing.JOptionPane.YES_NO_CANCEL_OPTION,
             javax.swing.JOptionPane.QUESTION_MESSAGE);
         
         if(confirmacao == javax.swing.JOptionPane.YES_OPTION){
-            //remove a linha da tabela
-            DefaultTableModel modelo = (DefaultTableModel) tblClientes.getModel();
-            modelo.removeRow(linha);
+            //deleta do banco usando o id
+            clienteService.delete(clienteSelecionado.getId());
+            
+            //atualiza a tabela
+            atualizarTabela();
             
             javax.swing.JOptionPane.showMessageDialog(this, 
                 "Cliente deletado com sucesso",
@@ -140,7 +181,7 @@ public class ListarClientes extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {

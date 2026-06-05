@@ -4,7 +4,12 @@
  */
 package br.com.ifba.prg03projetosgcr.cliente.view;
 
+import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
+import br.com.ifba.prg03projetosgcr.cliente.entity.Endereco;
+import br.com.ifba.prg03projetosgcr.cliente.service.ClienteService;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +23,8 @@ public class CadastrarClientes extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CadastrarClientes.class.getName());
     private ListarClientes listarClientes;
+    @Autowired
+    private ClienteService clienteService;
     /**
      * Creates new form CadastrarClientes
      */
@@ -25,6 +32,21 @@ public class CadastrarClientes extends javax.swing.JFrame {
         initComponents();
         
         setLocationRelativeTo(null);
+        
+        //cria grupod de botoes
+        javax.swing.ButtonGroup grupoEndereco = new javax.swing.ButtonGroup();
+        
+        //adiciona as checkboxes ao grupo
+        grupoEndereco.add(cbxEnderecoNao);
+        grupoEndereco.add(cbxEnderecoSim);
+        
+        cbxEnderecoSim.setSelected(true); //deixa o sim por padrão
+        
+        alternarCamposEndereco(true); //mostra os campos de endereco com SIM automatico
+        
+        // adiciona ações de cliquea para esconder/mostrar
+        cbxEnderecoSim.addActionListener(e -> alternarCamposEndereco(true));
+        cbxEnderecoNao.addActionListener(e -> alternarCamposEndereco(false));
     }
     
     public void setListarClientes(ListarClientes listarClientes){
@@ -58,7 +80,7 @@ public class CadastrarClientes extends javax.swing.JFrame {
         txtPntReferencia = new javax.swing.JTextField();
         btnCadastrarCliente = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(214, 214, 214));
 
         lblTituloCadastro.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
@@ -196,10 +218,6 @@ public class CadastrarClientes extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cbxEnderecoNaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxEnderecoNaoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cbxEnderecoNaoActionPerformed
-
     private void txtBairroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBairroActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBairroActionPerformed
@@ -218,6 +236,65 @@ public class CadastrarClientes extends javax.swing.JFrame {
 
     private void btnCadastrarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarClienteActionPerformed
         // TODO add your handling code here:
+        
+        try{
+            //validação de endereço
+            if(cbxEnderecoSim.isSelected()){
+                //verifica se Bairro, Rua ou numero sao vazios
+                if(txtBairro.getText().trim().isEmpty() ||
+                    txtRua.getText().trim().isEmpty() ||
+                    txtNumero.getText().trim().isEmpty()){
+                    
+                    //mostra avisao na tela
+                    JOptionPane.showMessageDialog(this,
+                            "Para cadastrar o endereço, é obrigatorio informar o bairro, a rua e o número",
+                            "Campos Obrigatórios",
+                            JOptionPane.WARNING_MESSAGE);
+                    
+                    //return para parar a execução do método e não ir pro banco de dados
+                    return;
+                }
+            }
+            
+            //cria a nova entidade Cliente
+            Cliente cliente = new Cliente();
+            cliente.setNome(txtNome.getText());
+            cliente.setTelefone(txtTelefone.getText());
+            cliente.setAtivo(true);
+            cliente.setSaldoDevedor(0.0); //valor inicial
+            
+            //se o usuario quer salvar endereco
+            if(cbxEnderecoSim.isSelected()){
+                Endereco endereco = new Endereco();
+                endereco.setBairro(txtBairro.getText());
+                endereco.setRua(txtRua.getText());
+                endereco.setNumero(txtNumero.getText());
+                endereco.setPontoReferencia(txtPntReferencia.getText());
+                
+                cliente.setEndereco(endereco);
+            }
+            
+            //salva no banco
+            clienteService.save(cliente);
+            
+            JOptionPane.showMessageDialog(this, 
+                    "Cliente Cadastrado com Sucesso",
+                    "Sucesso",
+                    JOptionPane.INFORMATION_MESSAGE);
+            
+            //atualiza a tabela na listagem
+            if (listarClientes != null){
+                listarClientes.atualizarTabela();
+            }
+            dispose();
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(this,
+                    "Erro ao cadastrar cliente",
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        
+        /*
         javax.swing.JOptionPane.showMessageDialog(this,
             "Cliente Cadastrado com Sucesso", 
             "Sucesso",
@@ -225,8 +302,27 @@ public class CadastrarClientes extends javax.swing.JFrame {
         
         //fecha tela de cadastro
         dispose();
+        */
     }//GEN-LAST:event_btnCadastrarClienteActionPerformed
 
+    private void cbxEnderecoNaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxEnderecoNaoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxEnderecoNaoActionPerformed
+    
+    private void alternarCamposEndereco(boolean mostrar){
+        //altera a visiblidade das labels
+        lblBairro.setVisible(mostrar);
+        lblRua.setVisible(mostrar);
+        lblNumero.setVisible(mostrar);
+        lblPntReferencia.setVisible(mostrar);
+        
+        //altera a visibilidade dos text fild
+        txtBairro.setVisible(mostrar);
+        txtRua.setVisible(mostrar);
+        txtNumero.setVisible(mostrar);
+        txtPntReferencia.setVisible(mostrar);
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -251,6 +347,8 @@ public class CadastrarClientes extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new CadastrarClientes().setVisible(true));
     }
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrarCliente;
