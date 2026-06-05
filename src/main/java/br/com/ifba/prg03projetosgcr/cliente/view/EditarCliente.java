@@ -7,6 +7,7 @@ package br.com.ifba.prg03projetosgcr.cliente.view;
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import br.com.ifba.prg03projetosgcr.cliente.entity.Endereco;
 import br.com.ifba.prg03projetosgcr.cliente.service.ClienteService;
+import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -273,6 +274,35 @@ public class EditarCliente extends javax.swing.JFrame {
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         try{
+            //validação do telefone
+            String telefoneDigitado = txtTelefone.getText();
+            //o comando //D remove tudo que nao for numero
+            String telefoneApenasNumeros = telefoneDigitado.replace("\\D", "");
+            
+            if(telefoneApenasNumeros.length() != 11){
+                JOptionPane.showMessageDialog(this,
+                    "O telefone está incorreto. Ele deve conter o DDD (2 digitos) e o número",
+                    "Telefone Inválido",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            //validacao de endereço
+            if (cbxEnderecoSim.isSelected()){
+                //verifica se bairro, rua ou numero sao vazios
+                if(txtBairro.getText().trim().isEmpty() ||
+                    txtRua.getText().trim().isEmpty() ||
+                    txtNumero.getText().trim().isEmpty()){
+                    
+                    JOptionPane.showMessageDialog(this,
+                        "Para cadastrar ou manter o endereço, é obrigatório informar o Bairro, Rua e Número",
+                        "Campos Obrigatórios",
+                        JOptionPane.WARNING_MESSAGE);
+                    
+                    return;
+                }
+            }
+            
             //so altera se o campo nao estiver vazio
             if(!txtNome.getText().trim().isEmpty()){
                 clienteAtual.setNome(txtNome.getText().trim());
