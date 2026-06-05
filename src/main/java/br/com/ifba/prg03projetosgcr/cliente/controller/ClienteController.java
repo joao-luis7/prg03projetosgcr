@@ -5,7 +5,6 @@
 package br.com.ifba.prg03projetosgcr.cliente.controller;
 
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
-import br.com.ifba.prg03projetosgcr.cliente.repository.ClienteRepository;
 import br.com.ifba.prg03projetosgcr.cliente.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

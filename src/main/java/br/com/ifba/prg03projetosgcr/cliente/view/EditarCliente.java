@@ -282,17 +282,14 @@ public class EditarCliente extends javax.swing.JFrame {
             if (!txtTelefone.getText().trim().isEmpty()) {
                 clienteAtual.setTelefone(txtTelefone.getText().trim());
             }
-
             // Verifica se a opção de endereço está marcada como Sim
             if (cbxEnderecoSim.isSelected()) {
                 Endereco endereco = clienteAtual.getEndereco();
-
                 // Se o cliente não tinha endereço cadastrado antes, criamos um novo
                 if (endereco == null) {
                     endereco = new Endereco();
                     clienteAtual.setEndereco(endereco);
                 }
-
                 // Aplica a mesma regra de não subscrever se estiver vazio
                 if (!txtBairro.getText().trim().isEmpty()) {
                     endereco.setBairro(txtBairro.getText().trim());
@@ -310,10 +307,9 @@ public class EditarCliente extends javax.swing.JFrame {
                 // Se o usuário marcou "Não" para o endereço, removemos o vinculo
                 clienteAtual.setEndereco(null); 
             }
-            
+
             //envia o objeto atualizado ao controller
             clienteController.update(clienteAtual);
-            
             JOptionPane.showMessageDialog(this,
                     "Cliente atualizado com Sucesso",
                     "Sucesso",

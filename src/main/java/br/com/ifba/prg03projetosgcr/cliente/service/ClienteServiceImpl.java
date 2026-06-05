@@ -83,6 +83,9 @@ public class ClienteServiceImpl implements ClienteService{
 
     @Override
     public List<Cliente> findByNome(String nome) {
+        if (nome == null || nome.isEmpty() || nome.equals("Pesquise por nome...")){
+            return clienteRepository.findAll();
+        }
         return clienteRepository.findByNomeContainingIgnoreCase(nome);
     }
     

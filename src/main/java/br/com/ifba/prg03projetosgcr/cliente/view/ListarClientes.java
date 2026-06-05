@@ -102,17 +102,10 @@ public class ListarClientes extends javax.swing.JFrame {
         atualizarTabela();
     }
     
-    //agbora ele pesquisa por nome, se nao houver nome na pesquisa ele lista todos
+    //agora ele pesquisa por nome, se nao houver nome na pesquisa ele lista todos
     public void atualizarTabela(){
         String nomeBusca = txtPesquisa.getText().trim();
-        
-        //se o campo estiver vazio ou com o texto padrão, busca todos
-        if(nomeBusca.isEmpty() || nomeBusca.equals("Pesquise por nome...")){
-            clientesCadastrados = clienteController.findAll();
-        } else{
-            //se o usuario digitou algo, filtamos
-            clientesCadastrados = clienteController.findByNome(nomeBusca);
-        }
+        clientesCadastrados = clienteController.findByNome(nomeBusca);
             
         DefaultTableModel modelo = (DefaultTableModel) tblClientes.getModel();
         modelo.setRowCount(0); //limpa as linhas atuais
