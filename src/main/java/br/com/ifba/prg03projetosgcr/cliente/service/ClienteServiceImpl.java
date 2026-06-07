@@ -6,18 +6,24 @@ package br.com.ifba.prg03projetosgcr.cliente.service;
 
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import br.com.ifba.prg03projetosgcr.cliente.repository.ClienteRepository;
+import br.com.ifba.prg03projetosgcr.util.ValidatorUtil;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 /**
  *
  * @author joaol
  */
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class ClienteServiceImpl implements ClienteService{
      
-    @Autowired
-    private ClienteRepository clienteRepository;
+    private final ClienteRepository clienteRepository;
+    private final ValidatorUtil validatorUtil;
+
     
     private Cliente findById(Long id){
         return clienteRepository.findById(id)
@@ -26,67 +32,73 @@ public class ClienteServiceImpl implements ClienteService{
     
     // MÉTODO AUXILIAR: Concentra todas as regras de validação do Cliente
     private void validarCliente(Cliente cliente){
+        log.info("Iniciando validação do cliente");
+        
         //verificar nome
-        if(cliente.getNome() == null || cliente.getNome().trim().isEmpty()){
-            throw new RuntimeException("O nome do cliente é obrigatorio");
-        }
+        validatorUtil.validateStringNotNullOrEmpty(cliente.getNome(), "nome do cliente");
         //verifica telefone
-        if(cliente.getTelefone() == null || cliente.getTelefone().trim().isEmpty()){
-            throw new RuntimeException("O telefone do cliente é obrigatorio");
-        }
-    
-        //validação do Telefone
-        if (cliente.getTelefone() != null && !cliente.getTelefone().trim().isEmpty()) {
-            String telefoneApenasNumeros = cliente.getTelefone().replaceAll("\\D", "");
-            if (telefoneApenasNumeros.length() != 11) {
-                throw new RuntimeException("O telefone deve conter o DDD (2 digitos) e o número.");
-            }
-        }
+        validatorUtil.validateStringNotNullOrEmpty(cliente.getTelefone(), "telefone do cliente");
+        //validação do Telefone (deve conter 11 digitos DDD + numero)
+        validatorUtil.validateNumericString(cliente.getTelefone(), "telefone", 11);
 
         //validação do Endereço
         if (cliente.getEndereco() != null) {
-            if (cliente.getEndereco().getBairro() == null || cliente.getEndereco().getBairro().trim().isEmpty() ||
-                cliente.getEndereco().getRua() == null || cliente.getEndereco().getRua().trim().isEmpty() ||
-                cliente.getEndereco().getNumero() == null || cliente.getEndereco().getNumero().trim().isEmpty()) {
-                
-                throw new RuntimeException("Para salvar o endereço, é obrigatório informar o bairro, a rua e o número.");
-            }
+            log.debug("Cliente possui endereço, validando campos");
+            validatorUtil.validateEndereco(cliente.getEndereco().getBairro(),
+                    cliente.getEndereco().getRua(),
+                    cliente.getEndereco().getNumero());      
         }
+        log.info("Validação do cliente concluída com sucesso");
     }
     
     @Override
     public Cliente save(Cliente cliente) {
+        log.info("Salvando novo cliente: {}", cliente.getNome());
         validarCliente(cliente);
             
         // Se passar por todas as regras, acessa o Repository para salvar
-        return clienteRepository.save(cliente);
+        Cliente salvo = clienteRepository.save(cliente);
+        log.info("Cliente salvo com sucesso. ID: {}", salvo.getId());
+        return salvo;        
     }
 
     @Override
     public List<Cliente> findAll() {
-        return clienteRepository.findAll();
+        log.debug("Buscando todos os clientes");
+        List<Cliente> clientes = clienteRepository.findAll();
+        log.debug("Encontrados {} clientes", clientes.size());
+        return clientes;
     }
 
     @Override
     public Cliente update(Cliente cliente) {
-        findById(cliente.getId());// vrifica primeiro se o cliente realmente existe no banco
+        log.info("Atualizando cliente ID: {}", cliente.getId());
+        findById(cliente.getId()); // verifica primeiro se o cliente realmente existe no banco
         validarCliente(cliente);
-
-        return clienteRepository.save(cliente);
+        
+        Cliente atualizado = clienteRepository.save(cliente);
+        log.info("Cliente atualizado com sucesso. ID: {}", atualizado.getId());
+        return atualizado;
     }
 
     @Override
     public void delete(Long id) {
+        log.info("Deletando cliente ID: {}", id);
         findById(id);
         clienteRepository.deleteById(id);
+        log.info("Cliente deletado com sucesso. ID: {}", id);
     }
 
     @Override
     public List<Cliente> findByNome(String nome) {
-        if (nome == null || nome.isEmpty() || nome.equals("Pesquise por nome...")){
+        log.debug("Buscando clientes por nome: {}", nome);
+        if (nome == null || nome.isEmpty() || nome.equals("Pesquise por nome...")) {
+            log.debug("Nome vazio ou padrão, retornando todos os clientes");
             return clienteRepository.findAll();
         }
-        return clienteRepository.findByNomeContainingIgnoreCase(nome);
+        List<Cliente> clientes = clienteRepository.findByNomeContainingIgnoreCase(nome);
+        log.debug("Encontrados {} clientes para o nome: {}", clientes.size(), nome);
+        return clientes;
     }
     
 }

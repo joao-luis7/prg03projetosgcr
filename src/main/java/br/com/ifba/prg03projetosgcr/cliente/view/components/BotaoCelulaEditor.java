@@ -12,12 +12,14 @@ import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.AbstractCellEditor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *
  * @author joaol
  * Editor personalizado para gerenciar os eventos dos botões de Editar e Deletar na tabela
  */
+@Slf4j
 public class BotaoCelulaEditor extends AbstractCellEditor implements TableCellEditor, ActionListener{
     
     private JTable table;
@@ -43,6 +45,7 @@ public class BotaoCelulaEditor extends AbstractCellEditor implements TableCellEd
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         this.currentRow = row;
+        log.debug("Editando célula da linha: {}", row);
         return renderer;
     }
 
@@ -51,8 +54,10 @@ public class BotaoCelulaEditor extends AbstractCellEditor implements TableCellEd
         JButton source = (JButton) e.getSource();
         
         if(source == renderer.getBtnEditar()){
+            log.info("Cliente editado na linha: {}", currentRow);
             listarClientesFrame.editarCliente(currentRow);
         } else if (source == renderer.getBtnDeletar()) {
+            log.info("Cliente deletado na linha: {}", currentRow);
             listarClientesFrame.deletarCliente(currentRow);
         }
         
