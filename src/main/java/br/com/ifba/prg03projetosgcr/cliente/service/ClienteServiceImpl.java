@@ -8,7 +8,6 @@ import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import br.com.ifba.prg03projetosgcr.cliente.repository.ClienteRepository;
 import br.com.ifba.prg03projetosgcr.util.ValidatorUtil;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +22,6 @@ public class ClienteServiceImpl implements ClienteService{
      
     private final ClienteRepository clienteRepository;
     private final ValidatorUtil validatorUtil;
-
-    
-    private Cliente findById(Long id){
-        return clienteRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Cliente não encontrado. ID: " + id));
-    }
     
     // MÉTODO AUXILIAR: Concentra todas as regras de validação do Cliente
     private void validarCliente(Cliente cliente){
@@ -100,5 +93,14 @@ public class ClienteServiceImpl implements ClienteService{
         log.debug("Encontrados {} clientes para o nome: {}", clientes.size(), nome);
         return clientes;
     }
-    
+
+    @Override
+    public Cliente findById(Long id) {
+        // O repository.findById devolve um Optional<Cliente>. 
+        // O orElseThrow já faz o "If/Else" 
+        return clienteRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Erro: Cliente não encontrado com o ID informado (" + id + ")."));
+    }
+
+ 
 }

@@ -46,4 +46,8 @@ public class ClienteController {
         log.debug("Requisição para buscar clientes por nome: {} recebida no controller", nome);
         return clienteService.findByNome(nome);
     }
+    
+    public Cliente findById(Long id) {
+        return clienteService.findById(id);
+    }
 }

@@ -171,7 +171,7 @@ public class CadastrarClientes extends javax.swing.JFrame {
                             .addComponent(lblNome, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblTituloCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -213,7 +213,7 @@ public class CadastrarClientes extends javax.swing.JFrame {
                     .addComponent(lblPntReferencia))
                 .addGap(40, 40, 40)
                 .addComponent(btnCadastrarCliente)
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         pack();

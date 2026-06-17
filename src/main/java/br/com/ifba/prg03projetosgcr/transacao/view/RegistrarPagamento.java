@@ -4,6 +4,8 @@
  */
 package br.com.ifba.prg03projetosgcr.transacao.view;
 
+import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
+
 /**
  *
  * @author joaol
@@ -11,7 +13,8 @@ package br.com.ifba.prg03projetosgcr.transacao.view;
 public class RegistrarPagamento extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(RegistrarPagamento.class.getName());
-
+    
+    private Cliente clienteSelecionado;
     /**
      * Creates new form RegistrarPagamento
      */
@@ -28,21 +31,186 @@ public class RegistrarPagamento extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        lblRegistroTitulo = new javax.swing.JLabel();
+        lblSelecionarTitulo = new javax.swing.JLabel();
+        btnBuscarCliente = new javax.swing.JButton();
+        txtCliente = new javax.swing.JTextField();
+        lblCliente = new javax.swing.JLabel();
+        lblSaldoDevedor = new javax.swing.JLabel();
+        txtSaldoDevedor = new javax.swing.JTextField();
+        cbxFormaPagamento = new javax.swing.JComboBox<>();
+        lblValorPagamento = new javax.swing.JLabel();
+        lblFormaPagamento = new javax.swing.JLabel();
+        txtValorPagamento = new javax.swing.JTextField();
+        btnSalvarPagamento = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        lblRegistroTitulo.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
+        lblRegistroTitulo.setText("Registro de Pagamento");
+
+        lblSelecionarTitulo.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
+        lblSelecionarTitulo.setText("Selecione o cliente para começar");
+
+        btnBuscarCliente.setBackground(new java.awt.Color(0, 102, 51));
+        btnBuscarCliente.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
+        btnBuscarCliente.setText("Buscar Cliente");
+        btnBuscarCliente.addActionListener(this::btnBuscarClienteActionPerformed);
+
+        txtCliente.setEditable(false);
+        txtCliente.addActionListener(this::txtClienteActionPerformed);
+
+        lblCliente.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        lblCliente.setText("Cliente:");
+
+        lblSaldoDevedor.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        lblSaldoDevedor.setText("Saldo Devedor:");
+
+        txtSaldoDevedor.addActionListener(this::txtSaldoDevedorActionPerformed);
+
+        cbxFormaPagamento.setEditable(true);
+        cbxFormaPagamento.setEnabled(false);
+        cbxFormaPagamento.addActionListener(this::cbxFormaPagamentoActionPerformed);
+
+        lblValorPagamento.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        lblValorPagamento.setText("Valor de Pagamento:");
+        lblValorPagamento.setEnabled(false);
+
+        lblFormaPagamento.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        lblFormaPagamento.setText("Forma de pagamento:");
+        lblFormaPagamento.setEnabled(false);
+
+        txtValorPagamento.setEnabled(false);
+        txtValorPagamento.addActionListener(this::txtValorPagamentoActionPerformed);
+
+        btnSalvarPagamento.setBackground(new java.awt.Color(0, 102, 51));
+        btnSalvarPagamento.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
+        btnSalvarPagamento.setText("Salvar Pagamento");
+        btnSalvarPagamento.setEnabled(false);
+        btnSalvarPagamento.addActionListener(this::btnSalvarPagamentoActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 508, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(80, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(lblRegistroTitulo)
+                            .addGap(231, 231, 231))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(lblSelecionarTitulo)
+                            .addGap(211, 211, 211))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(btnBuscarCliente)
+                            .addGap(251, 251, 251))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(lblCliente)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(113, 113, 113)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblFormaPagamento)
+                                .addGap(18, 18, 18)
+                                .addComponent(cbxFormaPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblSaldoDevedor)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtSaldoDevedor, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblValorPagamento)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtValorPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(167, 167, 167)
+                                .addComponent(btnSalvarPagamento)))
+                        .addGap(224, 224, 224))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 403, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(34, 34, 34)
+                .addComponent(lblRegistroTitulo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblSelecionarTitulo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnBuscarCliente)
+                .addGap(50, 50, 50)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblCliente))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblSaldoDevedor)
+                    .addComponent(txtSaldoDevedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbxFormaPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblFormaPagamento))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblValorPagamento)
+                    .addComponent(txtValorPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(44, 44, 44)
+                .addComponent(btnSalvarPagamento)
+                .addContainerGap(74, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnBuscarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarClienteActionPerformed
+        // Abre a tela de busca e PAUSA o código aqui
+        BuscaCliente dialogBusca = new BuscaCliente(this, true);
+        dialogBusca.setLocationRelativeTo(this);
+        dialogBusca.setVisible(true); // O código trava nesta linha até o dispose() ser chamado lá
+
+        // A tela fechou Agora resgatamos a variável
+        Cliente clienteEscolhido = dialogBusca.getClienteSelecionado();
+
+        // 3. Se ele não fechou no "X" e realmente escolheu alguém
+        if (clienteEscolhido != null) {
+
+            // Guarda esse cliente na TelaPagamento para usar na hora de salvar o pagamento depois
+            this.clienteSelecionado = clienteEscolhido;
+
+            // Preenche os text fields travados (como nome e o saldo)
+            txtCliente.setText(clienteEscolhido.getNome());
+            txtSaldoDevedor.setText(String.format("R$ %.2f", clienteEscolhido.getSaldoDevedor()));
+
+            // Destrava os campos de valor e forma de pagamento para o caixa digitar!
+            txtValorPagamento.setEnabled(true);
+            cbxFormaPagamento.setEnabled(true);
+            btnSalvarPagamento.setEnabled(true);
+
+            // Joga o cursor do teclado direto para o campo do valor
+            txtValorPagamento.requestFocus();
+        }
+    }//GEN-LAST:event_btnBuscarClienteActionPerformed
+
+    private void txtClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtClienteActionPerformed
+
+    private void txtSaldoDevedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSaldoDevedorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSaldoDevedorActionPerformed
+
+    private void cbxFormaPagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxFormaPagamentoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxFormaPagamentoActionPerformed
+
+    private void txtValorPagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtValorPagamentoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtValorPagamentoActionPerformed
+
+    private void btnSalvarPagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarPagamentoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSalvarPagamentoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -70,5 +238,17 @@ public class RegistrarPagamento extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBuscarCliente;
+    private javax.swing.JButton btnSalvarPagamento;
+    private javax.swing.JComboBox<String> cbxFormaPagamento;
+    private javax.swing.JLabel lblCliente;
+    private javax.swing.JLabel lblFormaPagamento;
+    private javax.swing.JLabel lblRegistroTitulo;
+    private javax.swing.JLabel lblSaldoDevedor;
+    private javax.swing.JLabel lblSelecionarTitulo;
+    private javax.swing.JLabel lblValorPagamento;
+    private javax.swing.JTextField txtCliente;
+    private javax.swing.JTextField txtSaldoDevedor;
+    private javax.swing.JTextField txtValorPagamento;
     // End of variables declaration//GEN-END:variables
 }

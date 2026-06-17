@@ -6,8 +6,11 @@ package br.com.ifba.prg03projetosgcr.transacao.view;
 
 import br.com.ifba.prg03projetosgcr.cliente.controller.ClienteController;
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
+import br.com.ifba.prg03projetosgcr.config.SpringContext;
 import java.util.List;
-
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import lombok.Getter;
 /**
  *
  * @author joaol
@@ -15,7 +18,11 @@ import java.util.List;
 public class BuscaCliente extends javax.swing.JDialog {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(BuscaCliente.class.getName());
-
+    
+    // Variável que vai segurar o cliente que o usuário escolheu na tabela
+    @Getter
+    private Cliente clienteSelecionado;
+    
     /**
      * Creates new form BuscaCliente
      */
@@ -49,20 +56,25 @@ public class BuscaCliente extends javax.swing.JDialog {
 
         tblClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Nome", "Número"
+                "ID", "Nome", "Número"
             }
         ));
         jScrollPane1.setViewportView(tblClientes);
+        if (tblClientes.getColumnModel().getColumnCount() > 0) {
+            tblClientes.getColumnModel().getColumn(0).setResizable(false);
+            tblClientes.getColumnModel().getColumn(0).setPreferredWidth(0);
+        }
 
         btnSelecionarCliente.setBackground(new java.awt.Color(0, 102, 51));
         btnSelecionarCliente.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         btnSelecionarCliente.setText("Selecionar Cliente");
+        btnSelecionarCliente.addActionListener(this::btnSelecionarClienteActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -103,7 +115,62 @@ public class BuscaCliente extends javax.swing.JDialog {
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         // TODO add your handling code here:
+        String nomeDigitado = txtPesquisar.getText().trim();
+        
+        //verifica se está vazio ou se é o texto padrão
+        if(nomeDigitado.isEmpty() || "Pesquisar...".equals(nomeDigitado)){
+            JOptionPane.showMessageDialog(this, "Digite um nome para pesquisar!");
+            return;
+        }
+        
+        try{
+            //chama o controller 
+            ClienteController clienteController = SpringContext.getBean(ClienteController.class);
+            List<Cliente> resultados = clienteController.findByNome(nomeDigitado);
+
+            DefaultTableModel modelo = (DefaultTableModel) tblClientes.getModel();
+
+            //Limpa a tabela antes de colocar os novos resultados (MUITO IMPORTANTE)
+            modelo.setNumRows(0);
+
+            // Preenche a tabela com os clientes que vieram do banco
+            for (Cliente c : resultados) {
+                modelo.addRow(new Object[]{
+                    c.getId(),
+                    c.getNome(),
+                    c.getTelefone()
+                });
+            }
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(this, "Erro ao conectar com o banco de dados: " + e.getMessage(), "Erro Crítico", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnSelecionarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelecionarClienteActionPerformed
+        // Descobre qual linha da tabela o usuário clicou
+        int linhaSelecionada = tblClientes.getSelectedRow();
+
+        // Valida se ele realmente clicou em alguém
+        if (linhaSelecionada == -1) {
+            JOptionPane.showMessageDialog(this, "Por favor, clique em um cliente na tabela primeiro.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            // Pega o ID da coluna 0 
+            Long idCliente = (Long) tblClientes.getValueAt(linhaSelecionada, 0);
+
+            // Vai no banco buscar o cliente COMPLETO (com saldo devedor, etc)
+            ClienteController clienteController = SpringContext.getBean(ClienteController.class);
+            this.clienteSelecionado = clienteController.findById(idCliente);
+
+            // 5. O comando mais importante: Fecha a janelinha e devolve o controle para a tela de trás
+            this.dispose();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao resgatar o cliente: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSelecionarClienteActionPerformed
 
     /**
      * @param args the command line arguments
