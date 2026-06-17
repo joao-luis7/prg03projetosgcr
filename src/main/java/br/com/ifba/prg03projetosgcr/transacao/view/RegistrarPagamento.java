@@ -6,6 +6,16 @@ package br.com.ifba.prg03projetosgcr.transacao.view;
 
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import org.springframework.stereotype.Component;
+import br.com.ifba.prg03projetosgcr.transacao.controller.PagamentoController;
+import br.com.ifba.prg03projetosgcr.transacao.entity.FormaPagamento;
+import br.com.ifba.prg03projetosgcr.transacao.entity.Pagamento;
+import jakarta.annotation.PostConstruct;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import javax.swing.JOptionPane;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 /**
  *
@@ -17,11 +27,45 @@ public class RegistrarPagamento extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(RegistrarPagamento.class.getName());
     
     private Cliente clienteSelecionado;
+    
+    private ListarPagamentos listarPagamentos;
+    private Pagamento pagamentoParaEditar;
+
+    @Autowired
+    private ApplicationContext context;
+    @Autowired
+    private PagamentoController pagamentoController;
+
     /**
      * Creates new form RegistrarPagamento
      */
     public RegistrarPagamento() {
         initComponents();
+
+        setLocationRelativeTo(null);
+
+        //popular o combobox com as formas de pagamento
+        cbxFormaPagamento.addItem("DINHEIRO");
+        cbxFormaPagamento.addItem("CARTAO");
+        cbxFormaPagamento.addItem("PIX");
+    }
+    
+    public void setListarPagamentos(ListarPagamentos listarPagamentos){
+        this.listarPagamentos = listarPagamentos;
+    }
+    
+    public void preencherCampos(Pagamento pagamento){
+        this.pagamentoParaEditar = pagamento;
+        this.clienteSelecionado = pagamento.getCliente();
+
+        txtCliente.setText(clienteSelecionado.getNome());
+        txtSaldoDevedor.setText(String.format("R$ %.2f", clienteSelecionado.getSaldoDevedor()));
+        txtValorPagamento.setText(String.format("%.2f", pagamento.getValorTotal()));
+        cbxFormaPagamento.setSelectedItem(pagamento.getFormaPagamento().toString());
+
+        txtValorPagamento.setEnabled(true);
+        cbxFormaPagamento.setEnabled(true);
+        btnSalvarPagamento.setEnabled(true);
     }
 
     /**
@@ -46,7 +90,7 @@ public class RegistrarPagamento extends javax.swing.JFrame {
         txtValorPagamento = new javax.swing.JTextField();
         btnSalvarPagamento = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         lblRegistroTitulo.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         lblRegistroTitulo.setText("Registro de Pagamento");
@@ -56,6 +100,7 @@ public class RegistrarPagamento extends javax.swing.JFrame {
 
         btnBuscarCliente.setBackground(new java.awt.Color(0, 102, 51));
         btnBuscarCliente.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
+        btnBuscarCliente.setForeground(new java.awt.Color(255, 255, 255));
         btnBuscarCliente.setText("Buscar Cliente");
         btnBuscarCliente.addActionListener(this::btnBuscarClienteActionPerformed);
 
@@ -68,6 +113,7 @@ public class RegistrarPagamento extends javax.swing.JFrame {
         lblSaldoDevedor.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         lblSaldoDevedor.setText("Saldo Devedor:");
 
+        txtSaldoDevedor.setEditable(false);
         txtSaldoDevedor.addActionListener(this::txtSaldoDevedorActionPerformed);
 
         cbxFormaPagamento.setEditable(true);
@@ -87,6 +133,7 @@ public class RegistrarPagamento extends javax.swing.JFrame {
 
         btnSalvarPagamento.setBackground(new java.awt.Color(0, 102, 51));
         btnSalvarPagamento.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
+        btnSalvarPagamento.setForeground(new java.awt.Color(255, 255, 255));
         btnSalvarPagamento.setText("Salvar Pagamento");
         btnSalvarPagamento.setEnabled(false);
         btnSalvarPagamento.addActionListener(this::btnSalvarPagamentoActionPerformed);
@@ -211,7 +258,79 @@ public class RegistrarPagamento extends javax.swing.JFrame {
     }//GEN-LAST:event_txtValorPagamentoActionPerformed
 
     private void btnSalvarPagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarPagamentoActionPerformed
-        // TODO add your handling code here:
+        // Validação de tela: verificar se há cliente selecionado
+        if (clienteSelecionado == null) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Por favor, selecione um cliente.",
+                "Erro",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Validação de tela: verificar valor do pagamento
+        String valorTexto = txtValorPagamento.getText().trim();
+        if (valorTexto.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Por favor, informe o valor do pagamento.",
+                "Erro",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        double valorPagamento;
+        try {
+            valorPagamento = Double.parseDouble(valorTexto.replace(",", "."));
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Valor inválido. Use formato numérico (ex: 100.00 ou 100,00).",
+                "Erro",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+       // Validação de tela: verificar forma de pagamento
+        if (cbxFormaPagamento.getSelectedItem() == null) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Por favor, selecione uma forma de pagamento.",
+                "Erro",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        FormaPagamento formaPagamento = FormaPagamento.valueOf(cbxFormaPagamento.getSelectedItem().toString());
+
+        // A regra de negócio é executada exclusivamente pela service através do controller
+        if (pagamentoParaEditar != null) {
+            // Edição: atualiza o pagamento existente
+            pagamentoParaEditar.setValorTotal(valorPagamento);
+            pagamentoParaEditar.setFormaPagamento(formaPagamento);
+
+            pagamentoController.update(pagamentoParaEditar);
+
+            JOptionPane.showMessageDialog(this,
+                "Pagamento atualizado com sucesso!",
+                "Sucesso",
+                JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            // Criação: registra novo pagamento
+            Pagamento pagamento = new Pagamento();
+            pagamento.setCliente(clienteSelecionado);
+            pagamento.setValorTotal(valorPagamento);
+            pagamento.setFormaPagamento(formaPagamento);
+
+            pagamentoController.registrarPagamento(pagamento);
+
+            JOptionPane.showMessageDialog(this,
+                "Pagamento registrado com sucesso!",
+                "Sucesso",
+                JOptionPane.INFORMATION_MESSAGE);
+        }
+
+        // Volta para a tela de Listar e atualiza a tabela
+        if (listarPagamentos != null) {
+            listarPagamentos.atualizarTabela();
+        }
+        this.dispose();
     }//GEN-LAST:event_btnSalvarPagamentoActionPerformed
 
     /**

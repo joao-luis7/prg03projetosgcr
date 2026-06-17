@@ -43,6 +43,7 @@ public class PagamentoServiceImpl implements PagamentoService{
         if (pagamento.getCliente() == null || pagamento.getCliente().getId() == null) {
             throw new IllegalArgumentException("Operação recusada: O pagamento deve estar vinculado a um cliente válido.");
         }
+        
 
         // busca o cliente novo direto do banco de dados
         // (Evita usar dados defasados caso a tela esteja aberta há muito tempo)

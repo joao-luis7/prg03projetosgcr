@@ -107,6 +107,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Registrar Pagamento"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRegistrarPagamentoActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblTituloTotal">
       <Properties>
