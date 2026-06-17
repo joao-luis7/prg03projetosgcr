@@ -102,5 +102,4 @@ public class ClienteServiceImpl implements ClienteService{
             .orElseThrow(() -> new IllegalArgumentException("Erro: Cliente não encontrado com o ID informado (" + id + ")."));
     }
 
- 
 }

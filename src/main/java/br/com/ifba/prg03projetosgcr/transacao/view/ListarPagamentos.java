@@ -4,10 +4,13 @@
  */
 package br.com.ifba.prg03projetosgcr.transacao.view;
 
+import org.springframework.stereotype.Component;
+
 /**
  *
  * @author joaol
  */
+@Component
 public class ListarPagamentos extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ListarPagamentos.class.getName());
@@ -30,7 +33,7 @@ public class ListarPagamentos extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPagamentos = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
+        lblTituloPagamentos = new javax.swing.JLabel();
         btnRegistrarPagamento = new javax.swing.JButton();
         lblTituloTotal = new javax.swing.JLabel();
         lblValorTotal = new javax.swing.JLabel();
@@ -51,11 +54,12 @@ public class ListarPagamentos extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblPagamentos);
 
-        jLabel1.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
-        jLabel1.setText("Controle de Pagamentos");
+        lblTituloPagamentos.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
+        lblTituloPagamentos.setText("Controle de Pagamentos");
 
-        btnRegistrarPagamento.setBackground(new java.awt.Color(46, 46, 46));
+        btnRegistrarPagamento.setBackground(new java.awt.Color(0, 102, 51));
         btnRegistrarPagamento.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
+        btnRegistrarPagamento.setForeground(new java.awt.Color(255, 255, 255));
         btnRegistrarPagamento.setText("Registrar Pagamento");
 
         lblTituloTotal.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
@@ -73,7 +77,7 @@ public class ListarPagamentos extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblTituloPagamentos, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnRegistrarPagamento))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 727, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -86,7 +90,7 @@ public class ListarPagamentos extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(lblTituloPagamentos)
                     .addComponent(btnRegistrarPagamento))
                 .addGap(18, 18, 18)
                 .addComponent(lblTituloTotal)
@@ -127,8 +131,8 @@ public class ListarPagamentos extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnRegistrarPagamento;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblTituloPagamentos;
     private javax.swing.JLabel lblTituloTotal;
     private javax.swing.JLabel lblValorTotal;
     private javax.swing.JTable tblPagamentos;

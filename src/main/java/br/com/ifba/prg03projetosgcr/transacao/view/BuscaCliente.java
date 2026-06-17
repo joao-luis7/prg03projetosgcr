@@ -11,6 +11,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import lombok.Getter;
+import org.springframework.stereotype.Component;
 /**
  *
  * @author joaol
@@ -160,11 +161,11 @@ public class BuscaCliente extends javax.swing.JDialog {
             // Pega o ID da coluna 0 
             Long idCliente = (Long) tblClientes.getValueAt(linhaSelecionada, 0);
 
-            // Vai no banco buscar o cliente COMPLETO (com saldo devedor, etc)
+            // Vai no banco buscar o cliente COMPLETO 
             ClienteController clienteController = SpringContext.getBean(ClienteController.class);
             this.clienteSelecionado = clienteController.findById(idCliente);
 
-            // 5. O comando mais importante: Fecha a janelinha e devolve o controle para a tela de trás
+            // fecha a janelinha e devolve o controle para a tela de trás
             this.dispose();
 
         } catch (Exception e) {

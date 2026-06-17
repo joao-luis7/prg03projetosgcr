@@ -5,11 +5,13 @@
 package br.com.ifba.prg03projetosgcr.transacao.view;
 
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author joaol
  */
+@Component
 public class RegistrarPagamento extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(RegistrarPagamento.class.getName());
