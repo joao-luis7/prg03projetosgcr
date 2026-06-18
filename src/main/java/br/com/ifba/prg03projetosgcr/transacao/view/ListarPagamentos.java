@@ -79,13 +79,16 @@ public class ListarPagamentos extends javax.swing.JFrame {
 
         DefaultTableModel modelo = (DefaultTableModel) tblPagamentos.getModel();
         modelo.setRowCount(0); //limpa as linhas atuais
+        
+        // Cria o formatador de datas
+        java.time.format.DateTimeFormatter formatador = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         for (Pagamento p : pagamentosCadastrados){
             //adiciona as colunas: cliente, valor, data, metodo e acoes
             modelo.addRow(new Object[]{
                 p.getCliente().getNome(),
                 "R$ " + String.format("%.2f", p.getValorTotal()),
-                p.getDataHora(),
+                p.getDataHora().format(formatador),
                 p.getFormaPagamento(),
                 "" //coluna de ações é renderizada pelos botoes
             });

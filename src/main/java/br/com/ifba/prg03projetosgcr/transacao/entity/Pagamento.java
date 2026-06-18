@@ -19,7 +19,7 @@ import lombok.Setter;
  * @author joaol
  */
 @Entity
-@Table(name = "tb_pagamento")
+@Table(name = "pagamentos")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,10 +29,5 @@ public class Pagamento extends Transacao{
     @Enumerated(EnumType.STRING)
     @Column(name = "forma_pagamento", nullable = false)
     private FormaPagamento formaPagamento;
-    
-    @Override
-    public void processarTransacao() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
     
 }

@@ -44,10 +44,11 @@ public class RegistrarPagamento extends javax.swing.JFrame {
 
         setLocationRelativeTo(null);
 
-        //popular o combobox com as formas de pagamento
-        cbxFormaPagamento.addItem("DINHEIRO");
-        cbxFormaPagamento.addItem("CARTAO");
-        cbxFormaPagamento.addItem("PIX");
+        //Limpa a caixa e carrega os dados diretamente do Enum
+        cbxFormaPagamento.removeAllItems();
+        for (FormaPagamento fp : FormaPagamento.values()) {
+            cbxFormaPagamento.addItem(fp.name());
+        }
     }
     
     public void setListarPagamentos(ListarPagamentos listarPagamentos){
@@ -116,7 +117,6 @@ public class RegistrarPagamento extends javax.swing.JFrame {
         txtSaldoDevedor.setEditable(false);
         txtSaldoDevedor.addActionListener(this::txtSaldoDevedorActionPerformed);
 
-        cbxFormaPagamento.setEditable(true);
         cbxFormaPagamento.setEnabled(false);
         cbxFormaPagamento.addActionListener(this::cbxFormaPagamentoActionPerformed);
 
@@ -235,6 +235,8 @@ public class RegistrarPagamento extends javax.swing.JFrame {
             txtValorPagamento.setEnabled(true);
             cbxFormaPagamento.setEnabled(true);
             btnSalvarPagamento.setEnabled(true);
+            lblFormaPagamento.setEnabled(true);
+            lblValorPagamento.setEnabled(true);
 
             // Joga o cursor do teclado direto para o campo do valor
             txtValorPagamento.requestFocus();
@@ -297,8 +299,18 @@ public class RegistrarPagamento extends javax.swing.JFrame {
             return;
         }
         
-        FormaPagamento formaPagamento = FormaPagamento.valueOf(cbxFormaPagamento.getSelectedItem().toString());
-
+        // Validação de tela: verificar forma de pagamento com proteção contra quebras
+        FormaPagamento formaPagamento;
+        try {
+            formaPagamento = FormaPagamento.valueOf(cbxFormaPagamento.getSelectedItem().toString());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Forma de pagamento inválida ou não reconhecida pelo sistema.",
+                "Erro",
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         // A regra de negócio é executada exclusivamente pela service através do controller
         if (pagamentoParaEditar != null) {
             // Edição: atualiza o pagamento existente

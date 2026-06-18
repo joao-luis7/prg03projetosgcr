@@ -49,7 +49,6 @@ public class BuscaCliente extends javax.swing.JDialog {
     private void initComponents() {
 
         txtPesquisar = new javax.swing.JTextField();
-        btnBuscar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblClientes = new javax.swing.JTable();
         btnSelecionarCliente = new javax.swing.JButton();
@@ -57,11 +56,6 @@ public class BuscaCliente extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         txtPesquisar.setText("Pesquisar...");
-
-        btnBuscar.setBackground(new java.awt.Color(0, 102, 51));
-        btnBuscar.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscar.setText("Buscar");
-        btnBuscar.addActionListener(this::btnBuscarActionPerformed);
 
         tblClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -101,30 +95,26 @@ public class BuscaCliente extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(147, 147, 147)
-                        .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnBuscar))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(37, 37, 37)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 518, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(212, 212, 212)
-                        .addComponent(btnSelecionarCliente)))
+                        .addComponent(btnSelecionarCliente))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(147, 147, 147)
+                        .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(31, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscar))
+                .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnSelecionarCliente)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
 
         pack();
@@ -181,42 +171,7 @@ public class BuscaCliente extends javax.swing.JDialog {
             }
         });
     }
-    
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-        /*
-        String nomeDigitado = txtPesquisar.getText().trim();
         
-        //verifica se está vazio ou se é o texto padrão
-        if(nomeDigitado.isEmpty() || "Pesquisar...".equals(nomeDigitado)){
-            JOptionPane.showMessageDialog(this, "Digite um nome para pesquisar!");
-            return;
-        }
-        
-        try{
-            //chama o controller 
-            ClienteController clienteController = SpringContext.getBean(ClienteController.class);
-            List<Cliente> resultados = clienteController.findByNome(nomeDigitado);
-
-            DefaultTableModel modelo = (DefaultTableModel) tblClientes.getModel();
-
-            //Limpa a tabela antes de colocar os novos resultados (MUITO IMPORTANTE)
-            modelo.setNumRows(0);
-
-            // Preenche a tabela com os clientes que vieram do banco
-            for (Cliente c : resultados) {
-                modelo.addRow(new Object[]{
-                    c.getId(),
-                    c.getNome(),
-                    c.getTelefone()
-                });
-            }
-        } catch (Exception e){
-            JOptionPane.showMessageDialog(this, "Erro ao conectar com o banco de dados: " + e.getMessage(), "Erro Crítico", JOptionPane.ERROR_MESSAGE);
-        }
-        */
-    }//GEN-LAST:event_btnBuscarActionPerformed
-    
     
     private void btnSelecionarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelecionarClienteActionPerformed
         // Descobre qual linha da tabela o usuário clicou
@@ -282,7 +237,6 @@ public class BuscaCliente extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnSelecionarCliente;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblClientes;

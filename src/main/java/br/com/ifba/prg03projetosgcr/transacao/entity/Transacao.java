@@ -41,9 +41,8 @@ public abstract class Transacao {
     @Column(name = "valor_total", nullable = false)
     private double valorTotal;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER) //obriga o banco a sempre trazer os dados do cliente junto com o pagamento
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
     
-    public abstract void processarTransacao();
 }

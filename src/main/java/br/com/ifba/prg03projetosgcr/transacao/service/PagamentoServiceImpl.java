@@ -44,6 +44,8 @@ public class PagamentoServiceImpl implements PagamentoService{
             throw new IllegalArgumentException("Operação recusada: O pagamento deve estar vinculado a um cliente válido.");
         }
         
+        //Injeta o momento exato em que o pagamento está sendo feito
+        pagamento.setDataHora(java.time.LocalDateTime.now());
 
         // busca o cliente novo direto do banco de dados
         // (Evita usar dados defasados caso a tela esteja aberta há muito tempo)
@@ -111,6 +113,9 @@ public class PagamentoServiceImpl implements PagamentoService{
         
         // Busca como o pagamento estava ANTES de ser alterado
         Pagamento pagamentoAntigo = findById(pagamentoAtualizado.getId());
+        
+        //preserva a data e hora de quando o recibo foi emitido
+        pagamentoAtualizado.setDataHora(pagamentoAntigo.getDataHora());
         
         // DESFAZ O PAGAMENTO ANTIGO (Devolve o saldo para o cliente antigo)
         // Isso resolve o caso do usuário ter selecionado o cliente errado!
