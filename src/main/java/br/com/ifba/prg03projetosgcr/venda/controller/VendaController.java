@@ -19,7 +19,7 @@ public class VendaController {
     
     private final VendaService vendaService;
 
-    public Venda realizarVenda(Venda venda) throws Exception {
+    public Venda realizarVenda(Venda venda){
         return vendaService.realizarVenda(venda);
     }
 
@@ -27,11 +27,11 @@ public class VendaController {
        return vendaService.findAll();
     }
     
-    public void cancelarVenda(Long id) throws Exception {
+    public void cancelarVenda(Long id) {
         vendaService.cancelarVenda(id);
     }
     
-    public Venda findByIdComItens(Long id) throws Exception {
+    public Venda findByIdComItens(Long id) {
         return vendaService.findByIdComItens(id);
     }
 }

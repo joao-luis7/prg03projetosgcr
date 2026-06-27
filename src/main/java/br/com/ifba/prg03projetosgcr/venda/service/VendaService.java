@@ -12,8 +12,8 @@ import java.util.List;
  * @author joaol
  */
 public interface VendaService {
-    Venda realizarVenda(Venda venda) throws Exception;
+    Venda realizarVenda(Venda venda);
     List<Venda> findAll();
-    void cancelarVenda(Long id) throws Exception;
-    Venda findByIdComItens(Long id) throws Exception;
+    void cancelarVenda(Long id);
+    Venda findByIdComItens(Long id);
 }

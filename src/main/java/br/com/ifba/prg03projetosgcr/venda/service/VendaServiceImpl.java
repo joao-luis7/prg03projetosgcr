@@ -7,18 +7,19 @@ package br.com.ifba.prg03projetosgcr.venda.service;
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import br.com.ifba.prg03projetosgcr.cliente.service.ClienteService;
 import br.com.ifba.prg03projetosgcr.produto.entity.Produto;
-import br.com.ifba.prg03projetosgcr.produto.repository.ProdutoRepository;
 import br.com.ifba.prg03projetosgcr.produto.service.ProdutoService;
 import br.com.ifba.prg03projetosgcr.transacao.entity.FormaPagamento;
 import br.com.ifba.prg03projetosgcr.venda.entity.ItemVenda;
 import br.com.ifba.prg03projetosgcr.venda.entity.StatusVenda;
 import br.com.ifba.prg03projetosgcr.venda.entity.Venda;
 import br.com.ifba.prg03projetosgcr.venda.repository.VendaRepository;
+import br.com.ifba.prg03projetosgcr.infrastructure.exception.RegraNegocioException;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 /**
  *
  * @author joaol
@@ -30,14 +31,13 @@ public class VendaServiceImpl implements VendaService{
     private final VendaRepository vendaRepository;
     private final ProdutoService produtoService;
     private final ClienteService clienteService;
-    private final ProdutoRepository produtoRepository;
     
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Venda realizarVenda(Venda venda) throws Exception {
+    public Venda realizarVenda(Venda venda) {
        
         if(venda.getItens() == null || venda.getItens().isEmpty()){
-            throw new Exception("O carrinho está vazio, adicione produtos antes de fianlizar");
+            throw new RegraNegocioException("O carrinho está vazio, adicione produtos antes de fianlizar");
         }
         
         double totalVenda = 0.0;
@@ -49,7 +49,7 @@ public class VendaServiceImpl implements VendaService{
             //Abate do estoque
             Produto p = produtoService.findById(item.getProduto().getId());
             if(p.getQuantidadeEstoque() < item.getQuantidade()){
-                throw new Exception("Estoque insuficiente para o produto: " + p.getNome());
+                throw new RegraNegocioException("Estoque insuficiente para o produto: " + p.getNome());
             }
             
             p.setQuantidadeEstoque(p.getQuantidadeEstoque() - item.getQuantidade());
@@ -64,7 +64,7 @@ public class VendaServiceImpl implements VendaService{
        //Se for FIADO, atualiza a divida do cliente
        if(venda.getFormaPagamento() == FormaPagamento.FIADO){
            if(venda.getCliente() == null){
-               throw new Exception("Para vender fiado, é obrigatório informar o cliente");
+               throw new RegraNegocioException("Para vender fiado, é obrigatório informar o cliente");
            }
            Cliente cliente = clienteService.findById(venda.getCliente().getId());
            cliente.setSaldoDevedor(cliente.getSaldoDevedor() + totalVenda);
@@ -82,15 +82,15 @@ public class VendaServiceImpl implements VendaService{
     
     @Override
     @Transactional // Garante que, se der erro no meio, o banco desfaz tudo (Rollback)
-    public void cancelarVenda(Long id) throws Exception {
+    public void cancelarVenda(Long id){
         
         //Busca a venda no banco
         Venda venda = vendaRepository.findById(id)
-                .orElseThrow(() -> new Exception("Venda não encontrada no sistema."));
+                .orElseThrow(() -> new RegraNegocioException("Venda não encontrada no sistema."));
 
         //Proteção: Verifica se já foi cancelada antes
         if (venda.getStatusVenda() == StatusVenda.CANCELADA) {
-            throw new Exception("Esta venda já consta como CANCELADA!");
+            throw new RegraNegocioException("Esta venda já consta como CANCELADA!");
         }
 
         // Se foi vendido fiado, precisamos devolver o limite/diminuir a dívida do cliente
@@ -115,7 +115,7 @@ public class VendaServiceImpl implements VendaService{
             produto.setQuantidadeEstoque(estoqueAtual + quantidadeDevolvida); // Ajuste o nome do 'set' se necessário
             
             // Salva o produto atualizado no banco
-            produtoRepository.save(produto);
+            produtoService.update(produto);
         }
         
         venda.setStatusVenda(StatusVenda.CANCELADA);
@@ -124,9 +124,9 @@ public class VendaServiceImpl implements VendaService{
     
     @Override
     @Transactional(readOnly = true)
-    public Venda findByIdComItens(Long id) throws Exception {
+    public Venda findByIdComItens(Long id) {
         Venda venda = vendaRepository.findById(id)
-                .orElseThrow(() -> new Exception("Venda não encontrada!"));
+                .orElseThrow(() -> new RegraNegocioException("Venda não encontrada!"));
 
         //  isso força o Hibernate a buscar os itens no banco 
         // antes de fechar a conexão, evitando o erro de LazyInitialization!
