@@ -126,7 +126,8 @@ public class BuscaProduto extends javax.swing.JDialog {
         jScrollPane1.setViewportView(tblProdutos);
 
         btnConfirmar.setBackground(new java.awt.Color(0, 102, 51));
-        btnConfirmar.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
+        btnConfirmar.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
+        btnConfirmar.setForeground(new java.awt.Color(255, 255, 255));
         btnConfirmar.setText("Confirmar Seleção");
         btnConfirmar.addActionListener(this::btnConfirmarActionPerformed);
 

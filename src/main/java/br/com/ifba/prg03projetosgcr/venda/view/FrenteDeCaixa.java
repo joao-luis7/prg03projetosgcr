@@ -6,6 +6,7 @@ package br.com.ifba.prg03projetosgcr.venda.view;
 
 import br.com.ifba.prg03projetosgcr.cliente.controller.ClienteController;
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
+import br.com.ifba.prg03projetosgcr.cliente.view.components.BotaoCelulaRenderer;
 import br.com.ifba.prg03projetosgcr.produto.controller.ProdutoController;
 import br.com.ifba.prg03projetosgcr.produto.entity.Produto;
 import br.com.ifba.prg03projetosgcr.transacao.entity.FormaPagamento;
@@ -13,6 +14,7 @@ import br.com.ifba.prg03projetosgcr.venda.view.BuscaCliente;
 import br.com.ifba.prg03projetosgcr.venda.controller.VendaController;
 import br.com.ifba.prg03projetosgcr.venda.entity.ItemVenda;
 import br.com.ifba.prg03projetosgcr.venda.entity.Venda;
+import br.com.ifba.prg03projetosgcr.venda.view.components.CarrinhoBotaoEditor;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,11 +54,19 @@ public class FrenteDeCaixa extends javax.swing.JFrame {
            cbxFormaPagamento.addItem(forma.name());
        }
        
+       
         //zera a qtnd de linhas da tabela para remover as linhas nulas
         DefaultTableModel modelo = (DefaultTableModel) tblCarrinho.getModel();
         
+        tblCarrinho.getColumnModel().getColumn(5).setCellRenderer(new BotaoCelulaRenderer(tblCarrinho));
+        tblCarrinho.getColumnModel().getColumn(5).setCellEditor(new CarrinhoBotaoEditor(tblCarrinho, this));
+        
         //aumenta a altura das linhas da tablea
         tblCarrinho.setRowHeight(45);
+        
+        // Garante que a coluna tenha uma largura razoável para caber os 2 botões
+        tblCarrinho.getColumnModel().getColumn(5).setPreferredWidth(110); 
+        tblCarrinho.getColumnModel().getColumn(5).setMinWidth(110);
         
     }
 
@@ -98,11 +108,11 @@ public class FrenteDeCaixa extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Código", "Nome", "Qtd", "Valor Unit.", "Subtotal", "Remover"
+                "Código", "Nome", "Qtd", "Valor Unit.", "Subtotal", "Ações"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -148,20 +158,19 @@ public class FrenteDeCaixa extends javax.swing.JFrame {
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnBuscarProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 675, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblTituloPdv, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblTituloPdv, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 818, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(btnNomeCliente)
-                        .addComponent(lblTotal)
-                        .addComponent(lblValorTotal)
-                        .addComponent(lblNomeCliente1)
-                        .addComponent(btnFinalizarVenda, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
-                        .addComponent(btnCancelarVenda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnFinalizarVenda, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCancelarVenda, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblValorTotal)
+                    .addComponent(lblTotal)
                     .addComponent(cbxFormaPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblFormaPagamento))
-                .addContainerGap(62, Short.MAX_VALUE))
+                    .addComponent(lblFormaPagamento)
+                    .addComponent(btnNomeCliente)
+                    .addComponent(lblNomeCliente1))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -175,19 +184,19 @@ public class FrenteDeCaixa extends javax.swing.JFrame {
                         .addGap(24, 24, 24)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(2, 2, 2)
+                        .addGap(6, 6, 6)
                         .addComponent(lblNomeCliente1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnNomeCliente)
-                        .addGap(28, 28, 28)
+                        .addGap(18, 18, 18)
                         .addComponent(lblFormaPagamento)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbxFormaPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(50, 50, 50)
+                        .addGap(54, 54, 54)
                         .addComponent(lblTotal)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblValorTotal)
-                        .addGap(67, 67, 67)
+                        .addGap(63, 63, 63)
                         .addComponent(btnFinalizarVenda)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnCancelarVenda)))
@@ -314,6 +323,56 @@ public class FrenteDeCaixa extends javax.swing.JFrame {
         }
         // lblTotal é aquele JLabel gigante na sua direita
         lblValorTotal.setText(String.format("R$ %.2f", total)); 
+    }
+    
+    public void editarQuantidadeItem(int linha) {
+        ItemVenda item = vendaAtual.getItens().get(linha);
+        String nomeProduto = item.getProduto().getNome();
+        
+        String input = JOptionPane.showInputDialog(this, 
+                "Nova quantidade para " + nomeProduto + ":", item.getQuantidade());
+                
+        if (input != null && !input.trim().isEmpty()) {
+            try {
+                int novaQtd = Integer.parseInt(input);
+                if (novaQtd > 0) {
+                    // Atualiza o objeto no back-end
+                    item.setQuantidade(novaQtd);
+                    item.setSubtotal(item.getPrecoUnitario() * novaQtd);
+                    
+                    // Atualiza os valores visuais na Tabela
+                    DefaultTableModel modelo = (DefaultTableModel) tblCarrinho.getModel();
+                    modelo.setValueAt(novaQtd, linha, 1); // Atualiza a coluna 1 (Qtd)
+                    modelo.setValueAt(String.format("R$ %.2f", item.getSubtotal()), linha, 3); // Atualiza a coluna 3 (Subtotal)
+                    
+                    // Recalcula o valor total da venda
+                    atualizarTotalVisor();
+                } else {
+                    JOptionPane.showMessageDialog(this, "A quantidade deve ser maior que zero!");
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Quantidade inválida!");
+            }
+        }
+    }
+    
+    public void removerItemCarrinho(int linha) {
+        ItemVenda item = vendaAtual.getItens().get(linha);
+        
+        int resposta = JOptionPane.showConfirmDialog(this, 
+            "Deseja remover '" + item.getProduto().getNome() + "' do carrinho?", 
+            "Remover Item", JOptionPane.YES_NO_OPTION);
+            
+        if (resposta == JOptionPane.YES_OPTION) {
+            // Remove da lista em memória
+            vendaAtual.getItens().remove(linha);
+            
+            // Remove da tabela visual
+            DefaultTableModel modelo = (DefaultTableModel) tblCarrinho.getModel();
+            modelo.removeRow(linha);
+            
+            atualizarTotalVisor();
+        }
     }
     /**
      * @param args the command line arguments
