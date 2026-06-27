@@ -8,6 +8,7 @@ import br.com.ifba.prg03projetosgcr.produto.controller.ProdutoController;
 import br.com.ifba.prg03projetosgcr.produto.entity.Produto;
 import br.com.ifba.prg03projetosgcr.produto.view.components.BotaoCelulaEditor;
 import br.com.ifba.prg03projetosgcr.produto.view.components.BotaoCelulaRenderer;
+import br.com.ifba.prg03projetosgcr.util.CampoPesquisaUtil;
 import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,15 +43,6 @@ public class ListarProdutos extends javax.swing.JFrame {
     public ListarProdutos() {
         initComponents();
         
-        //faz pesquisa dinamica atualiza a tabela cada vez que uma tecla é acionada
-        txtPesquisar.addKeyListener(new java.awt.event.KeyAdapter() {
-            @Override
-            public void keyReleased(java.awt.event.KeyEvent evt){
-            //toda vez o usuario usa uma tecla, a tabela filta
-            atualizarTabela();
-            }
-        });
-        
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -64,23 +56,11 @@ public class ListarProdutos extends javax.swing.JFrame {
         //Configurar a coluna de ações com botoes de editar e deletar
         configurarColunaAcoes();
         
-        //apaga o "Pesquise por nome..." ao clicar e recoloca se sair sem digitar nada
-        txtPesquisar.addFocusListener(new java.awt.event.FocusAdapter() {
-            @Override
-            public void focusGained(java.awt.event.FocusEvent evt){
-                if(txtPesquisar.getText().equals("Pesquisar...")){
-                    txtPesquisar.setText(""); //limpa o campo
-                }
-            }
-            
-            @Override
-            public void focusLost(java.awt.event.FocusEvent evt){
-                if(txtPesquisar.getText().trim().isEmpty()){
-                    txtPesquisar.setText("Pesquisar..."); //volta para o texto padrao
-                    atualizarTabela(); //recarrega a tabela completa
-                }
-            }
-        });
+        CampoPesquisaUtil.configurarPesquisaDinamica(
+            txtPesquisar, 
+            "Pesquisar...", 
+            this::atualizarTabela
+        );
     }
     
     

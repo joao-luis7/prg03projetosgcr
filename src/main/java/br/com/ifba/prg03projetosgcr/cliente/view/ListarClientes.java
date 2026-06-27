@@ -9,6 +9,7 @@ import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import br.com.ifba.prg03projetosgcr.cliente.service.ClienteService;
 import br.com.ifba.prg03projetosgcr.cliente.view.components.BotaoCelulaRenderer;
 import br.com.ifba.prg03projetosgcr.cliente.view.components.BotaoCelulaEditor;
+import br.com.ifba.prg03projetosgcr.util.CampoPesquisaUtil;
 import jakarta.annotation.PostConstruct;
 import javax.swing.JPanel;
 import java.awt.Dimension;
@@ -66,32 +67,11 @@ public class ListarClientes extends javax.swing.JFrame {
         //Configurar a coluna de ações com botoes de editar e deletar
         configurarColunaAcoes();
         
-        //apaga o "Pesquise por nome..." ao clicar e recoloca se sair sem digitar nada
-        txtPesquisa.addFocusListener(new java.awt.event.FocusAdapter() {
-            @Override
-            public void focusGained(java.awt.event.FocusEvent evt){
-                if(txtPesquisa.getText().equals("Pesquise por nome...")){
-                    txtPesquisa.setText(""); //limpa o campo
-                }
-            }
-            
-            @Override
-            public void focusLost(java.awt.event.FocusEvent evt){
-                if(txtPesquisa.getText().trim().isEmpty()){
-                    txtPesquisa.setText("Pesquise por nome..."); //volta para o texto padrao
-                    atualizarTabela(); //recarrega a tabela completa
-                }
-            }
-        });
-        
-        //faz pesquisa dinamica atualiza a tabela cada vez que uma tecla é acionada
-        txtPesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
-            @Override
-            public void keyReleased(java.awt.event.KeyEvent evt){
-            //toda vez o usuario usa uma tecla, a tabela filta
-            atualizarTabela();
-            }
-        });
+        CampoPesquisaUtil.configurarPesquisaDinamica(
+            txtPesquisa, 
+            "Pesquise por nome...", 
+            this::atualizarTabela
+        );
     }
     
     // O @PostConstruct faz com que este método rode automaticamente 
