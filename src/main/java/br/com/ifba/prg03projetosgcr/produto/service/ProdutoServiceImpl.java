@@ -79,4 +79,9 @@ public class ProdutoServiceImpl implements ProdutoService{
         return produtoRepository.findByNomeContainingIgnoreCase(nome);
     }
     
+    @Override
+    public List<Produto> findAllAtivos() {
+        return produtoRepository.findByAtivoTrue(); 
+    }
+    
 }

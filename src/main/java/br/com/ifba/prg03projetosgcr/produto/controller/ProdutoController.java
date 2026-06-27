@@ -45,4 +45,8 @@ public class ProdutoController {
     public List<Produto> findByNome(String nome) {
         return produtoService.findByNome(nome);
     }
+
+    public List<Produto> findAllAtivos() {
+        return produtoService.findAllAtivos();
+    }
 }

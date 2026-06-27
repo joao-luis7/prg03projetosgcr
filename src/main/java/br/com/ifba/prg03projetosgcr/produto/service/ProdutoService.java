@@ -17,4 +17,5 @@ public interface ProdutoService {
     List<Produto> findAll();
     Produto findById(Long id);
     List<Produto> findByNome(String nome);
+    List<Produto> findAllAtivos();
 }
