@@ -5,6 +5,7 @@
 package br.com.ifba.prg03projetosgcr.venda.service;
 
 import br.com.ifba.prg03projetosgcr.venda.entity.Venda;
+import java.util.List;
 
 /**
  *
@@ -12,4 +13,7 @@ import br.com.ifba.prg03projetosgcr.venda.entity.Venda;
  */
 public interface VendaService {
     Venda realizarVenda(Venda venda) throws Exception;
+    List<Venda> findAll();
+    void cancelarVenda(Long id) throws Exception;
+    Venda findByIdComItens(Long id) throws Exception;
 }

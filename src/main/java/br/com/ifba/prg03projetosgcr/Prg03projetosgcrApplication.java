@@ -8,6 +8,7 @@ import br.com.ifba.prg03projetosgcr.cliente.view.ListarClientes;
 import br.com.ifba.prg03projetosgcr.produto.view.ListarProdutos;
 import br.com.ifba.prg03projetosgcr.transacao.view.ListarPagamentos;
 import br.com.ifba.prg03projetosgcr.venda.view.FrenteDeCaixa;
+import br.com.ifba.prg03projetosgcr.venda.view.ListarVendas;
 
 @SpringBootApplication
 public class Prg03projetosgcrApplication {
@@ -20,7 +21,7 @@ public class Prg03projetosgcrApplication {
                 .run(args);
             
             //recupera a instancia da tela gerenciada pelo spring
-            FrenteDeCaixa telaPrincipal = context.getBean(FrenteDeCaixa.class);
+            ListarVendas telaPrincipal = context.getBean(ListarVendas.class);
             
             //exibe a tela
             telaPrincipal.setVisible(true);
