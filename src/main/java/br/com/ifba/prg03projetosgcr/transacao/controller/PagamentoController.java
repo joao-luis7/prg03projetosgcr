@@ -49,4 +49,8 @@ public class PagamentoController {
         log.info("Requisição para deletar pagamento ID: {} recebida no controller", id);
         pagamentoService.delete(id);
     }
+    
+    public Double getFaturamentoUltimos30Dias() {
+        return pagamentoService.calcularFaturamentoUltimos30Dias();
+    }
 }

@@ -125,13 +125,8 @@ public class VendaServiceImpl implements VendaService{
     @Override
     @Transactional(readOnly = true)
     public Venda findByIdComItens(Long id) {
-        Venda venda = vendaRepository.findById(id)
+        // cerChama o novo método do repositório que já traz os itens
+        return vendaRepository.findByIdComItens(id)
                 .orElseThrow(() -> new RegraNegocioException("Venda não encontrada!"));
-
-        //  isso força o Hibernate a buscar os itens no banco 
-        // antes de fechar a conexão, evitando o erro de LazyInitialization!
-        venda.getItens().size(); 
-
-        return venda;
     }
 }

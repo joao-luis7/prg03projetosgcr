@@ -8,6 +8,7 @@ import br.com.ifba.prg03projetosgcr.transacao.entity.Pagamento;
 import br.com.ifba.prg03projetosgcr.transacao.repository.PagamentoRepository;
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import br.com.ifba.prg03projetosgcr.cliente.service.ClienteService;
+import br.com.ifba.prg03projetosgcr.transacao.entity.FormaPagamento;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -48,23 +49,35 @@ public class PagamentoServiceImpl implements PagamentoService{
         pagamento.setDataHora(java.time.LocalDateTime.now());
 
         // busca o cliente novo direto do banco de dados
-        // (Evita usar dados defasados caso a tela esteja aberta há muito tempo)
         Cliente clienteNoBanco = clienteService.findById(pagamento.getCliente().getId());
-
-        // Abate o valor pago do saldo devedor atual
         double saldoAtual = clienteNoBanco.getSaldoDevedor();
-        double novoSaldo = saldoAtual - pagamento.getValorTotal();
         
-        clienteNoBanco.setSaldoDevedor(novoSaldo);
-
-        // Salva as duas informações no banco (Protegido pelo @Transactional)
-        clienteService.update(clienteNoBanco);
+        //O cliente já está quite?
+        if(saldoAtual <= 0){
+            log.warn("Tentativa de pagamento para cleinte sem divida. ID Cleitne: {}", clienteNoBanco.getId());
+            throw new IllegalArgumentException("Operação recusada: o cliente não possui dívida");
+        }
         
+        //Está pagando mais do que deve e não é fiado?
+        if (pagamento.getValorTotal() > saldoAtual && pagamento.getFormaPagamento() != FormaPagamento.FIADO) {
+            log.warn("Tentativa de pagamento maior que o saldo devedor. Valor: {}, Saldo: {}", pagamento.getValorTotal(), saldoAtual);
+            throw new IllegalArgumentException(String.format("Operação recusada: O valor do pagamento (R$ %.2f) não pode ser maior que o saldo devedor (R$ %.2f).", pagamento.getValorTotal(), saldoAtual));
+        }
+        
+        double novoSaldo = saldoAtual;
+        
+        //So abate o valor pago se a forma nao for FIADO
+        if(pagamento.getFormaPagamento() != FormaPagamento.FIADO){
+            novoSaldo = saldoAtual - pagamento.getValorTotal();
+            clienteNoBanco.setSaldoDevedor(novoSaldo);
+            clienteService.update(clienteNoBanco);
+            log.debug("Saldo do cliente abatido. Novo saldo devedor: R$ {}", novoSaldo);
+        } else{
+            log.info("Pagamento registrado como FIADO. Saldo não foi alterado");
+        }
         Pagamento pagamentoSalvo = pagamentoRepository.save(pagamento);
-
-        log.info("Pagamento finalizado com sucesso! ID Recibo: {}. Novo saldo do cliente: R$ {}", 
+        log.info("Pagamento finalizado com sucesso! ID Recibo: {}. Saldo atual do Cliente: R$ {}", 
                 pagamentoSalvo.getId(), novoSaldo);
-                
         return pagamentoSalvo;
     }
     
@@ -97,13 +110,19 @@ public class PagamentoServiceImpl implements PagamentoService{
         Cliente cliente = clienteService.findById(pagamento.getCliente().getId());
         
         //Devolve a dívida para o cliente (soma o valor que havia sido abatido)
-        double saldoRestaurado = cliente.getSaldoDevedor() + pagamento.getValorTotal();
-        cliente.setSaldoDevedor(saldoRestaurado);
-        clienteService.update(cliente);
+        double saldoRestaurado = cliente.getSaldoDevedor();
         
-        // Agora sim, exclui o recibo de pagamento
+        // Devolve a dívida para o cliente APENAS se o pagamento excluído não for FIADO
+        if (pagamento.getFormaPagamento() != FormaPagamento.FIADO) {
+            saldoRestaurado = cliente.getSaldoDevedor() + pagamento.getValorTotal();
+            cliente.setSaldoDevedor(saldoRestaurado);
+            clienteService.update(cliente);
+            log.info("Pagamento deletado. Saldo do cliente restaurado para R$ {}", saldoRestaurado);
+        } else {
+            log.info("Pagamento do tipo FIADO deletado. Saldo do cliente mantido intacto.");
+        }
+        
         pagamentoRepository.delete(pagamento);
-        log.info("Pagamento deletado. Saldo do cliente restaurado para R$ {}", saldoRestaurado);
     }
 
     @Override
@@ -118,22 +137,43 @@ public class PagamentoServiceImpl implements PagamentoService{
         pagamentoAtualizado.setDataHora(pagamentoAntigo.getDataHora());
         
         // DESFAZ O PAGAMENTO ANTIGO (Devolve o saldo para o cliente antigo)
-        // Isso resolve o caso do usuário ter selecionado o cliente errado!
-        Cliente clienteAntigo = clienteService.findById(pagamentoAntigo.getCliente().getId());
-        clienteAntigo.setSaldoDevedor(clienteAntigo.getSaldoDevedor() + pagamentoAntigo.getValorTotal());
-        clienteService.update(clienteAntigo);
+        if (pagamentoAntigo.getFormaPagamento() != FormaPagamento.FIADO) {
+            Cliente clienteAntigo = clienteService.findById(pagamentoAntigo.getCliente().getId());
+            clienteAntigo.setSaldoDevedor(clienteAntigo.getSaldoDevedor() + pagamentoAntigo.getValorTotal());
+            clienteService.update(clienteAntigo);
+            log.debug("Valores originais restaurados no saldo do cliente (ID: {}) antes de aplicar atualização.", clienteAntigo.getId());
+        }
         
-        // APLICA O NOVO PAGAMENTO (Abate o saldo do cliente novo com o valor novo)
-        // Se o usuário não errou o cliente, o "clienteNovo" será o mesmo cara, 
-        // e a matemática vai bater perfeitamente no final.
-        Cliente clienteNovo = clienteService.findById(pagamentoAtualizado.getCliente().getId());
-        clienteNovo.setSaldoDevedor(clienteNovo.getSaldoDevedor() - pagamentoAtualizado.getValorTotal());
-        clienteService.update(clienteNovo);
+        // APLICA O NOVO PAGAMENTO (apenas se a nova forma não for FIADO)
+        if(pagamentoAtualizado.getFormaPagamento() != FormaPagamento.FIADO){
+            Cliente clienteNovo = clienteService.findById(pagamentoAtualizado.getCliente().getId());
+            
+            //valida pra nao abater mais do que o cliente deve 
+            if(pagamentoAtualizado.getValorTotal() > clienteNovo.getSaldoDevedor()){
+                log.warn("Atualização recusada. O valor excede o saldo devedor do cliente.");
+                throw new IllegalArgumentException("O valor editado excede o saldo devedor");
+            }
+            
+            clienteNovo.setSaldoDevedor(clienteNovo.getSaldoDevedor() - pagamentoAtualizado.getValorTotal());
+            clienteService.update(clienteNovo);
+            log.debug("Novos valores abatidos do saldo do cliente (ID: {}", clienteNovo.getId()); 
+        }
         
-        // Salva o recibo com os novos dados (valor, forma de pagamento, etc)
         Pagamento salvo = pagamentoRepository.save(pagamentoAtualizado);
-        log.info("Pagamento atualizado com sucesso.");
+        log.info("Pagamento atualizado com sucesso");
         
         return salvo;
+    }
+    
+    @Override
+    public Double calcularFaturamentoUltimos30Dias() {
+        // 1. Descobre a data e hora de exatos 30 dias atrás
+        java.time.LocalDateTime trintaDiasAtras = java.time.LocalDateTime.now().minusDays(30);
+        
+        // 2. Manda o banco somar
+        Double soma = pagamentoRepository.somarFaturamentoDesde(trintaDiasAtras);
+        
+        // 3. Se for null (zero vendas no período), devolve 0.0
+        return soma != null ? soma : 0.0;
     }
 }

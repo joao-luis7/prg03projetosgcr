@@ -23,4 +23,6 @@ public interface PagamentoService {
     Pagamento update(Pagamento pagamento);
     
     void delete(Long id);
+    
+    public Double calcularFaturamentoUltimos30Dias();
 }

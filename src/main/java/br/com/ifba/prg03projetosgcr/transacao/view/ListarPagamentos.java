@@ -13,6 +13,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -73,6 +74,11 @@ public class ListarPagamentos extends javax.swing.JFrame {
         atualizarTabela();
     }
     
+    @PostConstruct
+    public void inicializarDashboard() {
+        atualizarPainelFinanceiro();
+    }
+    
     
     public void atualizarTabela(){
         pagamentosCadastrados = pagamentoController.findAll();
@@ -110,10 +116,12 @@ public class ListarPagamentos extends javax.swing.JFrame {
     public void editarPagamento(int linha){
         Pagamento pagamentoSelecionado = pagamentosCadastrados.get(linha);
 
-        //criar e configurar a tela de edição
-        RegistrarPagamento telaEditar = context.getBean(RegistrarPagamento.class);
-        telaEditar.preencherCampos(pagamentoSelecionado);
-        telaEditar.setListarPagamentos(this);
+        // Chama nova tela de EditarPagamento através do contexto do Spring
+        EditarPagamento telaEditar = context.getBean(EditarPagamento.class);
+        
+        // Envia os dados do pagamento e a referência desta lista para a nova tela
+        telaEditar.preencherDados(pagamentoSelecionado, this); 
+        
         telaEditar.setVisible(true);
 
     }
@@ -122,33 +130,60 @@ public class ListarPagamentos extends javax.swing.JFrame {
         //pega o pagamento exato da lista
         Pagamento pagamentoSelecionado = pagamentosCadastrados.get(linha);
 
-
-
-        int confirmacao = javax.swing.JOptionPane.showConfirmDialog(this,
+        int confirmacao = JOptionPane.showConfirmDialog(this,
             "Tem ceteza que deseja deletar o pagamento de: " + pagamentoSelecionado.getCliente().getNome() + "?",
             "Confirmar Exclusão",
-            javax.swing.JOptionPane.YES_NO_CANCEL_OPTION,
-            javax.swing.JOptionPane.QUESTION_MESSAGE);
+            JOptionPane.YES_NO_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
 
-        if(confirmacao == javax.swing.JOptionPane.YES_OPTION){
+        if(confirmacao == JOptionPane.YES_OPTION){
             //deleta do banco usando o id
             pagamentoController.delete(pagamentoSelecionado.getId());
 
             //atualiza a tabela
             atualizarTabela();
+            atualizarPainelFinanceiro();
 
-            javax.swing.JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(this,
                 "Pagamento deletado com sucesso",
                 "Sucesso",
-                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.INFORMATION_MESSAGE);
         }
+        
+        
     }
 
     private void abrirTelaRegistro(){
         // como a tela é prototype, o context.getBean cria uma tela zerada toda vez
         RegistrarPagamento telaRegistro = context.getBean(RegistrarPagamento.class);
         telaRegistro.setListarPagamentos(this);
+        telaRegistro.limparCampos();
         telaRegistro.setVisible(true);
+
+    }
+    
+    public void atualizarPainelFinanceiro() {
+        try {
+            // Busca a soma já calculada pelo Spring
+            Double total30Dias = pagamentoController.getFaturamentoUltimos30Dias();
+            
+            System.out.println(">>> Total recebido do banco: " + total30Dias);
+
+            // Formata para o padrão de moeda brasileiro (R$ 0,00)
+            String totalFormatado = String.format("R$ %,.2f", total30Dias);
+            
+            // Aplica no Label
+            lblValorTotal.setText(totalFormatado);
+            
+            // Força a atualização visual do componente
+            lblValorTotal.setText(totalFormatado);
+            lblValorTotal.repaint(); 
+            lblValorTotal.revalidate();
+            
+        } catch (Exception e) {
+            lblValorTotal.setText("R$ 0,00");
+            System.out.println("Erro ao calcular faturamento: " + e.getMessage());
+        }
 
     }
     

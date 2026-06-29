@@ -221,16 +221,24 @@ public class RegistrarPagamento extends javax.swing.JFrame {
         // A tela fechou Agora resgatamos a variável
         Cliente clienteEscolhido = dialogBusca.getClienteSelecionado();
 
-        // 3. Se ele não fechou no "X" e realmente escolheu alguém
+        // Se ele não fechou no "X" e realmente escolheu alguém
         if (clienteEscolhido != null) {
-
+            //Impede continuar se não há saldo devedor
+            if(clienteEscolhido.getSaldoDevedor() <= 0){
+                JOptionPane.showMessageDialog(this,
+                        "Este cliente não possuii saldo pendente a ser pago",
+                        "Aviso",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
             // Guarda esse cliente na TelaPagamento para usar na hora de salvar o pagamento depois
             this.clienteSelecionado = clienteEscolhido;
 
             // Preenche os text fields travados (como nome e o saldo)
             txtCliente.setText(clienteEscolhido.getNome());
             txtSaldoDevedor.setText(String.format("R$ %.2f", clienteEscolhido.getSaldoDevedor()));
-
+            
             // Destrava os campos de valor e forma de pagamento para o caixa digitar!
             txtValorPagamento.setEnabled(true);
             cbxFormaPagamento.setEnabled(true);
@@ -242,7 +250,30 @@ public class RegistrarPagamento extends javax.swing.JFrame {
             txtValorPagamento.requestFocus();
         }
     }//GEN-LAST:event_btnBuscarClienteActionPerformed
+    
+    public void limparCampos() {
+        // Limpa as variáveis de controle da classe
+        this.clienteSelecionado = null;
+        this.pagamentoParaEditar = null;
 
+        // Limpa os campos de texto
+        txtCliente.setText("");
+        txtSaldoDevedor.setText("");
+        txtValorPagamento.setText("");
+        
+        //Reseta o ComboBox para a primeira opção
+        if (cbxFormaPagamento.getItemCount() > 0) {
+            cbxFormaPagamento.setSelectedIndex(0);
+        }
+
+        //Trava novamente os campos até que um novo cliente seja buscado
+        txtValorPagamento.setEnabled(false);
+        cbxFormaPagamento.setEnabled(false);
+        btnSalvarPagamento.setEnabled(false);
+        lblFormaPagamento.setEnabled(false);
+        lblValorPagamento.setEnabled(false);
+    }
+    
     private void txtClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtClienteActionPerformed
@@ -262,20 +293,20 @@ public class RegistrarPagamento extends javax.swing.JFrame {
     private void btnSalvarPagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarPagamentoActionPerformed
         // Validação de tela: verificar se há cliente selecionado
         if (clienteSelecionado == null) {
-            javax.swing.JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(this,
                 "Por favor, selecione um cliente.",
                 "Erro",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+                JOptionPane.ERROR_MESSAGE);
             return;
         }
         
         // Validação de tela: verificar valor do pagamento
         String valorTexto = txtValorPagamento.getText().trim();
         if (valorTexto.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(this,
                 "Por favor, informe o valor do pagamento.",
                 "Erro",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+                JOptionPane.ERROR_MESSAGE);
             return;
         }
         
@@ -283,19 +314,19 @@ public class RegistrarPagamento extends javax.swing.JFrame {
         try {
             valorPagamento = Double.parseDouble(valorTexto.replace(",", "."));
         } catch (NumberFormatException e) {
-            javax.swing.JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(this,
                 "Valor inválido. Use formato numérico (ex: 100.00 ou 100,00).",
                 "Erro",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+                JOptionPane.ERROR_MESSAGE);
             return;
         }
         
        // Validação de tela: verificar forma de pagamento
         if (cbxFormaPagamento.getSelectedItem() == null) {
-            javax.swing.JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(this,
                 "Por favor, selecione uma forma de pagamento.",
                 "Erro",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+                JOptionPane.ERROR_MESSAGE);
             return;
         }
         
@@ -341,7 +372,12 @@ public class RegistrarPagamento extends javax.swing.JFrame {
         // Volta para a tela de Listar e atualiza a tabela
         if (listarPagamentos != null) {
             listarPagamentos.atualizarTabela();
+            listarPagamentos.atualizarPainelFinanceiro();
         }
+        
+        //zera todos os campos antes de fechar para a proxima iteração
+        limparCampos();
+        
         this.dispose();
     }//GEN-LAST:event_btnSalvarPagamentoActionPerformed
 

@@ -49,6 +49,8 @@ public class BotaoCelulaEditor extends AbstractCellEditor implements TableCellEd
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        fireEditingStopped();
+        
         JButton source = (JButton) e.getSource();
 
         if(source == renderer.getBtnEditar()){

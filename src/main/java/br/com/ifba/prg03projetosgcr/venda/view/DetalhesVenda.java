@@ -5,6 +5,7 @@
 package br.com.ifba.prg03projetosgcr.venda.view;
 
 import br.com.ifba.prg03projetosgcr.venda.entity.ItemVenda;
+import br.com.ifba.prg03projetosgcr.venda.entity.Venda;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -23,7 +24,7 @@ public class DetalhesVenda extends javax.swing.JDialog {
         initComponents();
     }
     
-    public void preencherDados(br.com.ifba.prg03projetosgcr.venda.entity.Venda venda) {
+    public void preencherDados(Venda venda) {
         
         // 1. Preenche os cabeçalhos (Labels)
         java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
