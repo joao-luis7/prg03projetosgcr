@@ -20,6 +20,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -85,6 +86,9 @@ public class ListarClientes extends javax.swing.JFrame {
     //agora ele pesquisa por nome, se nao houver nome na pesquisa ele lista todos
     public void atualizarTabela(){
         String nomeBusca = txtPesquisa.getText().trim();
+        if (nomeBusca.equals("Pesquise por nome...")) {
+            nomeBusca = "";
+        }
         clientesCadastrados = clienteController.findByNome(nomeBusca);
             
         DefaultTableModel modelo = (DefaultTableModel) tblClientes.getModel();
@@ -129,23 +133,23 @@ public class ListarClientes extends javax.swing.JFrame {
         Cliente clienteSelecionado = clientesCadastrados.get(linha);
         
         
-        int confirmacao = javax.swing.JOptionPane.showConfirmDialog(this, 
+        int confirmacao = JOptionPane.showConfirmDialog(this, 
             "Tem ceteza que deseja deletar o cliente: " + clienteSelecionado.getNome() + "?", 
             "Confirmar Exclusão", 
-            javax.swing.JOptionPane.YES_NO_CANCEL_OPTION,
-            javax.swing.JOptionPane.QUESTION_MESSAGE);
+            JOptionPane.YES_NO_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
         
-        if(confirmacao == javax.swing.JOptionPane.YES_OPTION){
+        if(confirmacao == JOptionPane.YES_OPTION){
             //deleta do banco usando o id
             clienteController.delete(clienteSelecionado.getId());
             
             //atualiza a tabela
             atualizarTabela();
             
-            javax.swing.JOptionPane.showMessageDialog(this, 
+            JOptionPane.showMessageDialog(this, 
                 "Cliente deletado com sucesso",
                 "Sucesso",
-                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.INFORMATION_MESSAGE);
         }
     }
     

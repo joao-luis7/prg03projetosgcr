@@ -15,5 +15,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long>{
+    // Busca TODOS (ativos e inativos)
     List<Cliente> findByNomeContainingIgnoreCase(String nome);
+    
+    List<Cliente> findByNomeContainingIgnoreCaseAndAtivoTrue(String nome);
+    
+    List<Cliente> findByAtivoTrue();
+    
 }

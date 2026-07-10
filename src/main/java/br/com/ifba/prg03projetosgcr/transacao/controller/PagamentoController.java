@@ -51,6 +51,7 @@ public class PagamentoController {
     }
     
     public Double getFaturamentoUltimos30Dias() {
+        log.debug("Requisição recebida para calcular o faturamento dos últimos 30 dias");
         return pagamentoService.calcularFaturamentoUltimos30Dias();
     }
 }

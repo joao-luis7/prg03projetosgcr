@@ -6,6 +6,7 @@ package br.com.ifba.prg03projetosgcr.produto.service;
 
 import br.com.ifba.prg03projetosgcr.produto.entity.Produto;
 import br.com.ifba.prg03projetosgcr.produto.repository.ProdutoRepository;
+import br.com.ifba.prg03projetosgcr.util.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,17 +23,14 @@ import java.util.List;
 public class ProdutoServiceImpl implements ProdutoService{
     
     private final ProdutoRepository produtoRepository;
+    private final ValidatorUtil validatorUtil;
     
     private void validarProduto(Produto produto) {
-        if (produto.getNome() == null || produto.getNome().trim().isEmpty()) {
-            throw new IllegalArgumentException("O nome do produto é obrigatório.");
-        }
-        if (produto.getPrecoUnidade() <= 0) {
-            throw new IllegalArgumentException("O preço de venda deve ser maior que zero.");
-        }
-        if (produto.getQuantidadeEstoque() < 0) {
-            throw new IllegalArgumentException("O estoque não pode ser negativo.");
-        }
+        validatorUtil.validateStringNotNullOrEmpty(produto.getNome(), "nome do produto");
+        validatorUtil.validateValorMaiorQueZero(produto.getPrecoUnidade(), "preço de venda");
+        validatorUtil.validateNaoNegativo(produto.getQuantidadeEstoque(), "estoque");
+        
+        log.info("Validação do produto concluída com sucesso.");
     }
     
     @Override
@@ -57,8 +55,8 @@ public class ProdutoServiceImpl implements ProdutoService{
     public void delete(Long id) {
         log.info("Deletando produto ID: {}", id);
         Produto produto = findById(id);
-        produtoRepository.delete(produto);    
-    
+        produto.setAtivo(false);
+        produtoRepository.save(produto);
     }
 
     @Override
@@ -69,11 +67,12 @@ public class ProdutoServiceImpl implements ProdutoService{
     @Override
     public Produto findById(Long id) {
         return produtoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado com o ID: " + id));    }
+                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado com o ID: " + id));
+    }
 
     @Override
     public List<Produto> findByNome(String nome) {
-       if (nome == null || nome.trim().isEmpty() || nome.equals("Pesquisar...")) {
+       if (nome == null || nome.trim().isEmpty()) {
             return findAll();
         }
         return produtoRepository.findByNomeContainingIgnoreCase(nome);

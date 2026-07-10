@@ -18,7 +18,6 @@ import lombok.Setter;
  */
 @MappedSuperclass // indica que esta classe não é uma tabela, mas fornece campos para outras
 @Getter 
-@Setter
 public class PersistenceEntity implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

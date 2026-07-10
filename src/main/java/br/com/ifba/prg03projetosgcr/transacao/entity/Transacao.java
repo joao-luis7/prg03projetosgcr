@@ -5,6 +5,7 @@
 package br.com.ifba.prg03projetosgcr.transacao.entity;
 
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
+import br.com.ifba.prg03projetosgcr.infrastructure.entity.PersistenceEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.FetchType;
@@ -28,20 +29,15 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class Transacao {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE) // Impede a criação do setId()
-    private Long id;
-    
+public abstract class Transacao extends PersistenceEntity{
+
     @Column(name = "data_hora", nullable = false)
     private LocalDateTime dataHora;
     
     @Column(name = "valor_total", nullable = false)
     private double valorTotal;
     
-    @ManyToOne(fetch = FetchType.EAGER) //obriga o banco a sempre trazer os dados do cliente junto com o pagamento
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
     

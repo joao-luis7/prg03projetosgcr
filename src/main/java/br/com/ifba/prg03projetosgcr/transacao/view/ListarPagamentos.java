@@ -132,7 +132,7 @@ public class ListarPagamentos extends javax.swing.JFrame {
 
         int confirmacao = JOptionPane.showConfirmDialog(this,
             "Tem ceteza que deseja deletar o pagamento de: " + pagamentoSelecionado.getCliente().getNome() + "?",
-            "Confirmar Exclusão",
+            "Confirzmar Exclusão",
             JOptionPane.YES_NO_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE);
 

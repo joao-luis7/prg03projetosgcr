@@ -108,6 +108,7 @@ public class EditarProduto extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         lblTituloEditarProduto = new javax.swing.JLabel();
         lblNomeProduto = new javax.swing.JLabel();
         txtNomeProduto = new javax.swing.JTextField();
@@ -182,10 +183,12 @@ public class EditarProduto extends javax.swing.JFrame {
         lblStatus.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         lblStatus.setText("Status");
 
+        buttonGroup1.add(rbtnAtivar);
         rbtnAtivar.setSelected(true);
         rbtnAtivar.setText("Ativar");
         rbtnAtivar.addActionListener(this::rbtnAtivarActionPerformed);
 
+        buttonGroup1.add(rbtnDesativar);
         rbtnDesativar.setText("Desativar");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -386,6 +389,7 @@ public class EditarProduto extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConfirmarAlteracoes;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel lblDescricao;
     private javax.swing.JLabel lblEstoque;
     private javax.swing.JLabel lblMargemLucro;

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 /**
  *
  * @author joaol
@@ -27,6 +28,7 @@ import lombok.Setter;
 @Table(name = "venda")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Venda extends Transacao{
     // Salvamos o status como texto puro para proteger o banco de dados
     @Enumerated(EnumType.STRING)

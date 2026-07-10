@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 /**
  *
  * @author joaol
@@ -18,6 +19,7 @@ import lombok.Setter;
 @Table(name="produtos")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Produto extends PersistenceEntity{
     
     @Column(nullable = false)

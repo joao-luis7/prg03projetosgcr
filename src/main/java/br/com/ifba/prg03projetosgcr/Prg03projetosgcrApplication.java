@@ -21,7 +21,7 @@ public class Prg03projetosgcrApplication {
                 .run(args);
             
             //recupera a instancia da tela gerenciada pelo spring
-            ListarPagamentos telaPrincipal = context.getBean(ListarPagamentos.class);
+            ListarVendas telaPrincipal = context.getBean(ListarVendas.class);
             
             //exibe a tela
             telaPrincipal.setVisible(true);

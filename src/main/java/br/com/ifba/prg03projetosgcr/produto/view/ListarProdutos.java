@@ -74,6 +74,13 @@ public class ListarProdutos extends javax.swing.JFrame {
     
     public void atualizarTabela() {
         String nomeBusca = txtPesquisar.getText().trim();
+        
+        if (nomeBusca.equals("Pesquisar...")) {
+            nomeBusca = "";
+        }
+        
+        
+        
         produtosCadastrados = produtoController.findByNome(nomeBusca);
             
         DefaultTableModel modelo = (DefaultTableModel) tblProdutos.getModel();
@@ -156,6 +163,7 @@ public class ListarProdutos extends javax.swing.JFrame {
         btnNovoProduto.addActionListener(this::btnNovoProdutoActionPerformed);
 
         txtPesquisar.setText("Pesquisar...");
+        txtPesquisar.addActionListener(this::txtPesquisarActionPerformed);
 
         tblProdutos.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
         tblProdutos.setModel(new javax.swing.table.DefaultTableModel(
@@ -210,6 +218,10 @@ public class ListarProdutos extends javax.swing.JFrame {
         telaCadastro.setListarProdutos(this);
         telaCadastro.setVisible(true);
     }//GEN-LAST:event_btnNovoProdutoActionPerformed
+
+    private void txtPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPesquisarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPesquisarActionPerformed
 
     /**
      * @param args the command line arguments

@@ -11,6 +11,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 /**
  *
  * @author joaol
@@ -45,6 +46,7 @@ public class ClienteServiceImpl implements ClienteService{
     }
     
     @Override
+    @Transactional
     public Cliente save(Cliente cliente) {
         log.info("Salvando novo cliente: {}", cliente.getNome());
         validarCliente(cliente);
@@ -58,12 +60,13 @@ public class ClienteServiceImpl implements ClienteService{
     @Override
     public List<Cliente> findAll() {
         log.debug("Buscando todos os clientes");
-        List<Cliente> clientes = clienteRepository.findAll();
+        List<Cliente> clientes = clienteRepository.findByAtivoTrue();
         log.debug("Encontrados {} clientes", clientes.size());
         return clientes;
     }
 
     @Override
+    @Transactional
     public Cliente update(Cliente cliente) {
         log.info("Atualizando cliente ID: {}", cliente.getId());
         findById(cliente.getId()); // verifica primeiro se o cliente realmente existe no banco
@@ -75,31 +78,46 @@ public class ClienteServiceImpl implements ClienteService{
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
-        log.info("Deletando cliente ID: {}", id);
-        findById(id);
-        clienteRepository.deleteById(id);
-        log.info("Cliente deletado com sucesso. ID: {}", id);
+        log.info("Solicitação de desativação) para o cliente ID: {}", id);
+        Cliente cliente = findById(id);
+        cliente.setAtivo(false);
+        clienteRepository.save(cliente);
+        log.info("Cliente desativado com sucesso. ID: {}", id);
     }
 
     @Override
     public List<Cliente> findByNome(String nome) {
         log.debug("Buscando clientes por nome: {}", nome);
-        if (nome == null || nome.isEmpty() || nome.equals("Pesquise por nome...")) {
+        if (nome == null || nome.isEmpty()) {
             log.debug("Nome vazio ou padrão, retornando todos os clientes");
-            return clienteRepository.findAll();
+            return clienteRepository.findByAtivoTrue();
         }
-        List<Cliente> clientes = clienteRepository.findByNomeContainingIgnoreCase(nome);
-        log.debug("Encontrados {} clientes para o nome: {}", clientes.size(), nome);
-        return clientes;
+        return clienteRepository.findByNomeContainingIgnoreCaseAndAtivoTrue(nome);
     }
 
     @Override
     public Cliente findById(Long id) {
-        // O repository.findById devolve um Optional<Cliente>. 
-        // O orElseThrow já faz o "If/Else" 
         return clienteRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Erro: Cliente não encontrado com o ID informado (" + id + ")."));
+    }    
+
+    @Override
+    public void atualizarSaldo(Long id, double novoValor) {
+        log.info("Solicitação para atualizar saldo do cliente ID: {} para o valor: {}", id, novoValor);
+        
+        Cliente cliente = findById(id);
+        
+        if (novoValor < 0) {
+            throw new IllegalArgumentException("Erro: O saldo devedor não pode ser um valor negativo.");
+        }
+        
+        cliente.setSaldoDevedor(novoValor);
+        
+        clienteRepository.save(cliente);
+        
+        log.info("Saldo do cliente ID: {} atualizado com sucesso.", id);
     }
 
 }

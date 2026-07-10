@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;    
 
 /**
  *
@@ -24,6 +25,7 @@ import lombok.Setter;
 @Table(name="item_venda")
 @Getter
 @Setter
+@NoArgsConstructor
 public class ItemVenda extends PersistenceEntity{
     
     //todo item pertence a uma venda especifica
@@ -32,7 +34,7 @@ public class ItemVenda extends PersistenceEntity{
     private Venda venda;
     
     //todo item aponta para um produto
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
     
