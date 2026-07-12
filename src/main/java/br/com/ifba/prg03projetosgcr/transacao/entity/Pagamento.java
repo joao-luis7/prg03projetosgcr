@@ -4,6 +4,7 @@
  */
 package br.com.ifba.prg03projetosgcr.transacao.entity;
 
+import br.com.ifba.prg03projetosgcr.transacao.entity.enums.FormaPagamento;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

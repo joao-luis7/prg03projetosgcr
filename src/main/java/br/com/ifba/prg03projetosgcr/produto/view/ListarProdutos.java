@@ -44,7 +44,6 @@ public class ListarProdutos extends javax.swing.JFrame {
         initComponents();
         
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         //zera a qtnd de linhas da tabela para remover as linhas nulas
         DefaultTableModel modelo = (DefaultTableModel) tblProdutos.getModel();
@@ -78,9 +77,7 @@ public class ListarProdutos extends javax.swing.JFrame {
         if (nomeBusca.equals("Pesquisar...")) {
             nomeBusca = "";
         }
-        
-        
-        
+
         produtosCadastrados = produtoController.findByNome(nomeBusca);
             
         DefaultTableModel modelo = (DefaultTableModel) tblProdutos.getModel();
@@ -151,7 +148,7 @@ public class ListarProdutos extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProdutos = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         lblTituloGestao.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
         lblTituloGestao.setText("Gestão de Produtos");

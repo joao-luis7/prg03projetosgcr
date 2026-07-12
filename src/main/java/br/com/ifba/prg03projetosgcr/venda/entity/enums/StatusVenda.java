@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package br.com.ifba.prg03projetosgcr.venda.entity;
+package br.com.ifba.prg03projetosgcr.venda.entity.enums;
 
 /**
  *

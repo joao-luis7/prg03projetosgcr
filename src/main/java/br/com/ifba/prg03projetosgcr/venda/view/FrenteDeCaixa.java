@@ -9,7 +9,7 @@ import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import br.com.ifba.prg03projetosgcr.cliente.view.components.BotaoCelulaRenderer;
 import br.com.ifba.prg03projetosgcr.produto.controller.ProdutoController;
 import br.com.ifba.prg03projetosgcr.produto.entity.Produto;
-import br.com.ifba.prg03projetosgcr.transacao.entity.FormaPagamento;
+import br.com.ifba.prg03projetosgcr.transacao.entity.enums.FormaPagamento;
 import br.com.ifba.prg03projetosgcr.venda.view.BuscaCliente;
 import br.com.ifba.prg03projetosgcr.venda.controller.VendaController;
 import br.com.ifba.prg03projetosgcr.venda.entity.ItemVenda;
@@ -92,7 +92,7 @@ public class FrenteDeCaixa extends javax.swing.JFrame {
         cbxFormaPagamento = new javax.swing.JComboBox<>();
         lblFormaPagamento = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         lblTituloPdv.setFont(new java.awt.Font("Poppins", 1, 16)); // NOI18N
         lblTituloPdv.setText("Realize uma venda (PDV)");

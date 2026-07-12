@@ -4,7 +4,8 @@
  */
 package br.com.ifba.prg03projetosgcr.venda.entity;
 
-import br.com.ifba.prg03projetosgcr.transacao.entity.FormaPagamento;
+import br.com.ifba.prg03projetosgcr.venda.entity.enums.StatusVenda;
+import br.com.ifba.prg03projetosgcr.transacao.entity.enums.FormaPagamento;
 import br.com.ifba.prg03projetosgcr.transacao.entity.Transacao;
 
 import jakarta.persistence.CascadeType;

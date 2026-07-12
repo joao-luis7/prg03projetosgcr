@@ -56,7 +56,6 @@ public class ListarClientes extends javax.swing.JFrame {
         pack();
         
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         //zera a qtnd de linhas da tabela para remover as linhas nulas
         DefaultTableModel modelo = (DefaultTableModel) tblClientes.getModel();
@@ -176,7 +175,7 @@ public class ListarClientes extends javax.swing.JFrame {
         btnCadastrarCliente = new javax.swing.JButton();
         txtPesquisa = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(214, 214, 214));
 
         jLabel1.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N

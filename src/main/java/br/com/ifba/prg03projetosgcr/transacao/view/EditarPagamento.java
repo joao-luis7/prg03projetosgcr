@@ -5,7 +5,7 @@
 package br.com.ifba.prg03projetosgcr.transacao.view;
 
 import br.com.ifba.prg03projetosgcr.transacao.controller.PagamentoController;
-import br.com.ifba.prg03projetosgcr.transacao.entity.FormaPagamento;
+import br.com.ifba.prg03projetosgcr.transacao.entity.enums.FormaPagamento;
 import br.com.ifba.prg03projetosgcr.transacao.entity.Pagamento;
 import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +74,7 @@ public class EditarPagamento extends javax.swing.JFrame {
 
         jCheckBox1.setText("jCheckBox1");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         lblTitulo.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         lblTitulo.setText("Edite o Pagamento");

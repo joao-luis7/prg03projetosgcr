@@ -7,7 +7,7 @@ package br.com.ifba.prg03projetosgcr.transacao.view;
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import org.springframework.stereotype.Component;
 import br.com.ifba.prg03projetosgcr.transacao.controller.PagamentoController;
-import br.com.ifba.prg03projetosgcr.transacao.entity.FormaPagamento;
+import br.com.ifba.prg03projetosgcr.transacao.entity.enums.FormaPagamento;
 import br.com.ifba.prg03projetosgcr.transacao.entity.Pagamento;
 import jakarta.annotation.PostConstruct;
 import java.text.DecimalFormat;

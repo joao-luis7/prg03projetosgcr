@@ -4,7 +4,7 @@
  */
 package br.com.ifba.prg03projetosgcr.venda.repository;
 
-import br.com.ifba.prg03projetosgcr.venda.entity.StatusVenda;
+import br.com.ifba.prg03projetosgcr.venda.entity.enums.StatusVenda;
 import br.com.ifba.prg03projetosgcr.venda.entity.Venda;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

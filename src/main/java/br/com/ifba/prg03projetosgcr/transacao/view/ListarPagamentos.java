@@ -43,7 +43,7 @@ public class ListarPagamentos extends javax.swing.JFrame {
     public ListarPagamentos() {
         initComponents();
         
-                JPanel painelPrincipal = new JPanel();
+        JPanel painelPrincipal = new JPanel();
         // Define o tamanho ideal apenas do conteúdo
         painelPrincipal.setPreferredSize(new Dimension(1280,720));
 
@@ -53,7 +53,6 @@ public class ListarPagamentos extends javax.swing.JFrame {
         pack();
 
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //zera a qtnd de linhas da tabela para remover as linhas nulas
         DefaultTableModel modelo = (DefaultTableModel) tblPagamentos.getModel();
@@ -198,7 +197,7 @@ public class ListarPagamentos extends javax.swing.JFrame {
         lblTituloTotal = new javax.swing.JLabel();
         lblValorTotal = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(214, 214, 214));
 
         tblPagamentos.setModel(new javax.swing.table.DefaultTableModel(

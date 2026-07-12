@@ -8,7 +8,7 @@ import br.com.ifba.prg03projetosgcr.transacao.entity.Pagamento;
 import br.com.ifba.prg03projetosgcr.transacao.repository.PagamentoRepository;
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import br.com.ifba.prg03projetosgcr.cliente.service.ClienteService;
-import br.com.ifba.prg03projetosgcr.transacao.entity.FormaPagamento;
+import br.com.ifba.prg03projetosgcr.transacao.entity.enums.FormaPagamento;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
