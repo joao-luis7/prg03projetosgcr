@@ -8,7 +8,7 @@ import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import br.com.ifba.prg03projetosgcr.cliente.service.ClienteService;
 import br.com.ifba.prg03projetosgcr.produto.entity.Produto;
 import br.com.ifba.prg03projetosgcr.produto.service.ProdutoService;
-import br.com.ifba.prg03projetosgcr.transacao.entity.enums.FormaPagamento;
+import br.com.ifba.prg03projetosgcr.pagamento.entity.FormaPagamento;
 import br.com.ifba.prg03projetosgcr.venda.entity.ItemVenda;
 import br.com.ifba.prg03projetosgcr.venda.entity.enums.StatusVenda;
 import br.com.ifba.prg03projetosgcr.venda.entity.Venda;

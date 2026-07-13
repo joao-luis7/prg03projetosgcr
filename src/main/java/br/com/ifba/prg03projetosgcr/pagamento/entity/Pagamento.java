@@ -2,9 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package br.com.ifba.prg03projetosgcr.transacao.entity;
+package br.com.ifba.prg03projetosgcr.pagamento.entity;
 
-import br.com.ifba.prg03projetosgcr.transacao.entity.enums.FormaPagamento;
+import br.com.ifba.prg03projetosgcr.core.entity.Transacao;
+import br.com.ifba.prg03projetosgcr.pagamento.entity.FormaPagamento;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

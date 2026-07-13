@@ -10,6 +10,9 @@ import br.com.ifba.prg03projetosgcr.cliente.service.ClienteService;
 import br.com.ifba.prg03projetosgcr.cliente.view.components.BotaoCelulaRenderer;
 import br.com.ifba.prg03projetosgcr.cliente.view.components.BotaoCelulaEditor;
 import br.com.ifba.prg03projetosgcr.util.CampoPesquisaUtil;
+import br.com.ifba.prg03projetosgcr.util.components.GenericBotaoCelulaEditor;
+import br.com.ifba.prg03projetosgcr.util.components.GenericBotaoCelulaRenderer;
+import br.com.ifba.prg03projetosgcr.util.components.TableActionEvent;
 import jakarta.annotation.PostConstruct;
 import javax.swing.JPanel;
 import java.awt.Dimension;
@@ -105,13 +108,28 @@ public class ListarClientes extends javax.swing.JFrame {
     }
     
     private void configurarColunaAcoes(){
-        //criar o renderer personalizado para a coluna acoes 
-        BotaoCelulaRenderer renderer = new BotaoCelulaRenderer(tblClientes);
+        //define o que acontece qnd os botoes genericos forem acionados nessa tela
+        TableActionEvent evento = new TableActionEvent(){
+            @Override
+            public void onEdit(int row) {
+                editarCliente(row);
+            }
+
+            @Override
+            public void onDelete(int row) {
+                deletarCliente(row);
+            }
+
+            @Override
+            public void onView(int row) {
+                //aqui nao tem visualizar
+            }     
+        };
         
-        //obter a coluna de acoes
-        TableColumn colunaAcoes = tblClientes.getColumnModel().getColumn(3);
-        colunaAcoes.setCellRenderer(renderer);
-        colunaAcoes.setCellEditor(new BotaoCelulaEditor(tblClientes, this));
+        int colunaAcoesIdx = 3;
+        
+        tblClientes.getColumnModel().getColumn(colunaAcoesIdx).setCellRenderer(new GenericBotaoCelulaRenderer());
+        tblClientes.getColumnModel().getColumn(colunaAcoesIdx).setCellEditor(new GenericBotaoCelulaEditor(evento, false));
         
         
     }

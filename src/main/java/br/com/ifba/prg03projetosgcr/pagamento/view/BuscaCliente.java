@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
-package br.com.ifba.prg03projetosgcr.transacao.view;
+package br.com.ifba.prg03projetosgcr.pagamento.view;
 
 import br.com.ifba.prg03projetosgcr.cliente.controller.ClienteController;
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;

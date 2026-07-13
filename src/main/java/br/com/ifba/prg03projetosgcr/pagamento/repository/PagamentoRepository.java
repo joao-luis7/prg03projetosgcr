@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package br.com.ifba.prg03projetosgcr.transacao.repository;
+package br.com.ifba.prg03projetosgcr.pagamento.repository;
 
-import br.com.ifba.prg03projetosgcr.transacao.entity.Pagamento;
+import br.com.ifba.prg03projetosgcr.pagamento.entity.Pagamento;
 import java.time.LocalDateTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

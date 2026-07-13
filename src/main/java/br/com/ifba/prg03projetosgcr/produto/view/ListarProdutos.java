@@ -9,6 +9,9 @@ import br.com.ifba.prg03projetosgcr.produto.entity.Produto;
 import br.com.ifba.prg03projetosgcr.produto.view.components.BotaoCelulaEditor;
 import br.com.ifba.prg03projetosgcr.produto.view.components.BotaoCelulaRenderer;
 import br.com.ifba.prg03projetosgcr.util.CampoPesquisaUtil;
+import br.com.ifba.prg03projetosgcr.util.components.GenericBotaoCelulaEditor;
+import br.com.ifba.prg03projetosgcr.util.components.GenericBotaoCelulaRenderer;
+import br.com.ifba.prg03projetosgcr.util.components.TableActionEvent;
 import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
@@ -124,13 +127,27 @@ public class ListarProdutos extends javax.swing.JFrame {
     }
     
     private void configurarColunaAcoes(){
-        //criar o renderer personalizado para a coluna acoes 
-        BotaoCelulaRenderer renderer = new BotaoCelulaRenderer(tblProdutos);
+        TableActionEvent evento = new TableActionEvent(){
+            @Override
+            public void onEdit(int row) {
+                editarProduto(row);
+            }
+
+            @Override
+            public void onDelete(int row) {
+                deletarProduto(row);
+            }
+
+            @Override
+            public void onView(int row) {
+                //aqui nao tem visualizar
+            }     
+        };
         
-        //obter a coluna de acoes
-        TableColumn colunaAcoes = tblProdutos.getColumnModel().getColumn(4);
-        colunaAcoes.setCellRenderer(renderer);
-        colunaAcoes.setCellEditor(new BotaoCelulaEditor(tblProdutos, this));
+        int colunaAcoesIdx = 4;
+        
+        tblProdutos.getColumnModel().getColumn(colunaAcoesIdx).setCellRenderer(new GenericBotaoCelulaRenderer());
+        tblProdutos.getColumnModel().getColumn(colunaAcoesIdx).setCellEditor(new GenericBotaoCelulaEditor(evento, false));
     }
         
     /**

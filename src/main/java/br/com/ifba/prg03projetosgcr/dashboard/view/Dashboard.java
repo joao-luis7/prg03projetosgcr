@@ -6,7 +6,7 @@ package br.com.ifba.prg03projetosgcr.dashboard.view;
 
 import br.com.ifba.prg03projetosgcr.cliente.view.ListarClientes;
 import br.com.ifba.prg03projetosgcr.produto.view.ListarProdutos;
-import br.com.ifba.prg03projetosgcr.transacao.view.ListarPagamentos;
+import br.com.ifba.prg03projetosgcr.pagamento.view.ListarPagamentos;
 import br.com.ifba.prg03projetosgcr.venda.view.ListarVendas;
 import br.com.ifba.prg03projetosgcr.venda.view.FrenteDeCaixa;
 import br.com.ifba.prg03projetosgcr.config.SpringContext;

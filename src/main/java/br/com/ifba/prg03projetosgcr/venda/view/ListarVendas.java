@@ -5,6 +5,9 @@
 package br.com.ifba.prg03projetosgcr.venda.view;
 
 import br.com.ifba.prg03projetosgcr.cliente.view.components.BotaoCelulaRenderer;
+import br.com.ifba.prg03projetosgcr.util.components.GenericBotaoCelulaEditor;
+import br.com.ifba.prg03projetosgcr.util.components.GenericBotaoCelulaRenderer;
+import br.com.ifba.prg03projetosgcr.util.components.TableActionEvent;
 import br.com.ifba.prg03projetosgcr.venda.controller.VendaController;
 import br.com.ifba.prg03projetosgcr.venda.entity.Venda;
 import br.com.ifba.prg03projetosgcr.venda.view.components.VendaBotaoEditor;
@@ -36,23 +39,46 @@ public class ListarVendas extends javax.swing.JFrame {
     public ListarVendas() {
         initComponents();
         
-        // Cria o renderer e vira a chave para mostrar a Olho em vez do Lápis
-        BotaoCelulaRenderer rendererPersonalizado = new BotaoCelulaRenderer(tblVendas);
-        rendererPersonalizado.setModoVisualizacao(true);
-        
-        // Aplica na coluna 6
-        tblVendas.getColumnModel().getColumn(6).setCellRenderer(rendererPersonalizado);
-        tblVendas.getColumnModel().getColumn(6).setCellEditor(new VendaBotaoEditor(tblVendas, this));
-        
-// Tranca a largura da coluna para os ícones não sumirem 
-        tblVendas.getColumnModel().getColumn(6).setPreferredWidth(110); 
-        tblVendas.getColumnModel().getColumn(6).setMinWidth(110);
-        tblVendas.setRowHeight(35);
+        configurarColunaAcoes();
     }
     
     @PostConstruct
     public void inicializarDados() {
         carregarTabelaVendas();
+    }
+    
+    private void configurarColunaAcoes() {
+        // Cria os eventos para os botões desta tela (Visualizar e Deletar)
+        TableActionEvent eventoVenda = new TableActionEvent() {
+            @Override
+            public void onEdit(int row) {
+                // Fica vazio,  Vendas não tem botão de editar
+            }
+
+            @Override
+            public void onDelete(int row) {
+                cancelarVenda(row);
+            }
+
+            @Override
+            public void onView(int row) {
+                verDetalhesVenda(row);
+            }
+        };
+
+        // Instancia o Renderer Genérico 
+        GenericBotaoCelulaRenderer rendererPersonalizado = new GenericBotaoCelulaRenderer();
+        rendererPersonalizado.setModoVisualizacao(true);
+        
+        
+        tblVendas.getColumnModel().getColumn(6).setCellRenderer(rendererPersonalizado);
+        // Passa 'true' no final do construtor do Editor para ele saber que está no modo visualização
+        tblVendas.getColumnModel().getColumn(6).setCellEditor(new GenericBotaoCelulaEditor(eventoVenda, true));
+        
+        // Tranca a largura da coluna e altura das linhas
+        tblVendas.getColumnModel().getColumn(6).setPreferredWidth(110); 
+        tblVendas.getColumnModel().getColumn(6).setMinWidth(110);
+        tblVendas.setRowHeight(35);
     }
     
     private void carregarTabelaVendas() {

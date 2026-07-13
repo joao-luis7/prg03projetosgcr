@@ -2,12 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package br.com.ifba.prg03projetosgcr.transacao.view;
+package br.com.ifba.prg03projetosgcr.pagamento.view;
 
-import br.com.ifba.prg03projetosgcr.transacao.controller.PagamentoController;
-import br.com.ifba.prg03projetosgcr.transacao.entity.Pagamento;
-import br.com.ifba.prg03projetosgcr.transacao.view.components.BotaoCelulaEditor;
-import br.com.ifba.prg03projetosgcr.transacao.view.components.BotaoCelulaRenderer;
+import br.com.ifba.prg03projetosgcr.pagamento.controller.PagamentoController;
+import br.com.ifba.prg03projetosgcr.pagamento.entity.Pagamento;
+import br.com.ifba.prg03projetosgcr.pagamento.view.components.BotaoCelulaEditor;
+import br.com.ifba.prg03projetosgcr.pagamento.view.components.BotaoCelulaRenderer;
+import br.com.ifba.prg03projetosgcr.util.components.GenericBotaoCelulaEditor;
+import br.com.ifba.prg03projetosgcr.util.components.GenericBotaoCelulaRenderer;
+import br.com.ifba.prg03projetosgcr.util.components.TableActionEvent;
 import jakarta.annotation.PostConstruct;
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -100,16 +103,28 @@ public class ListarPagamentos extends javax.swing.JFrame {
         }
     }
     
-        private void configurarColunaAcoes(){
-        //criar o renderer personalizado para a coluna acoes
-        BotaoCelulaRenderer renderer = new BotaoCelulaRenderer(tblPagamentos);
+    private void configurarColunaAcoes(){
+        TableActionEvent evento = new TableActionEvent(){
+            @Override
+            public void onEdit(int row) {
+                editarPagamento(row);
+            }
 
-        //obter a coluna de acoes
-        TableColumn colunaAcoes = tblPagamentos.getColumnModel().getColumn(4);
-        colunaAcoes.setCellRenderer(renderer);
-        colunaAcoes.setCellEditor(new BotaoCelulaEditor(tblPagamentos, this));
+            @Override
+            public void onDelete(int row) {
+                deletarPagamento(row);
+            }
 
-
+            @Override
+            public void onView(int row) {
+                //aqui nao tem visualizar
+            }     
+        };
+        
+        int colunaAcoesIdx = 4;
+        
+        tblPagamentos.getColumnModel().getColumn(colunaAcoesIdx).setCellRenderer(new GenericBotaoCelulaRenderer());
+        tblPagamentos.getColumnModel().getColumn(colunaAcoesIdx).setCellEditor(new GenericBotaoCelulaEditor(evento, false));
     }
 
     public void editarPagamento(int linha){

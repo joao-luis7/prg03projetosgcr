@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package br.com.ifba.prg03projetosgcr.transacao.controller;
+package br.com.ifba.prg03projetosgcr.pagamento.controller;
 
-import br.com.ifba.prg03projetosgcr.transacao.entity.Pagamento;
-import br.com.ifba.prg03projetosgcr.transacao.service.PagamentoService;
+import br.com.ifba.prg03projetosgcr.pagamento.entity.Pagamento;
+import br.com.ifba.prg03projetosgcr.pagamento.service.PagamentoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import lombok.extern.slf4j.Slf4j;

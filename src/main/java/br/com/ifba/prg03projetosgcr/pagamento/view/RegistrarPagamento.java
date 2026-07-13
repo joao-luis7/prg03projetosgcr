@@ -2,13 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package br.com.ifba.prg03projetosgcr.transacao.view;
+package br.com.ifba.prg03projetosgcr.pagamento.view;
 
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import org.springframework.stereotype.Component;
-import br.com.ifba.prg03projetosgcr.transacao.controller.PagamentoController;
-import br.com.ifba.prg03projetosgcr.transacao.entity.enums.FormaPagamento;
-import br.com.ifba.prg03projetosgcr.transacao.entity.Pagamento;
+import br.com.ifba.prg03projetosgcr.pagamento.controller.PagamentoController;
+import br.com.ifba.prg03projetosgcr.pagamento.entity.FormaPagamento;
+import br.com.ifba.prg03projetosgcr.pagamento.entity.Pagamento;
 import jakarta.annotation.PostConstruct;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;

@@ -2,39 +2,39 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package br.com.ifba.prg03projetosgcr.transacao.view.components;
+package br.com.ifba.prg03projetosgcr.util.components;
 
-import br.com.ifba.prg03projetosgcr.transacao.view.ListarPagamentos;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
-import javax.swing.AbstractCellEditor;
 import lombok.extern.slf4j.Slf4j;
 /**
  *
  * @author joaol
  */
 @Slf4j
-public class BotaoCelulaEditor extends AbstractCellEditor implements TableCellEditor, ActionListener{
-
-    private JTable table;
-    private ListarPagamentos listarPagamentosFrame;
-    private BotaoCelulaRenderer renderer;
+public class GenericBotaoCelulaEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
+    
+    private TableActionEvent event;
+    private GenericBotaoCelulaRenderer renderer;
     private int currentRow;
+    
+    // Construtor recebe a interface em vez de uma View específica
+    public GenericBotaoCelulaEditor(TableActionEvent event, boolean modoVisualizacao) {
+        this.event = event;
+        this.renderer = new GenericBotaoCelulaRenderer();
+        this.renderer.setModoVisualizacao(modoVisualizacao);
 
-    public BotaoCelulaEditor(JTable table, ListarPagamentos listarPagamentosFrame) {
-        this.table = table;
-        this.listarPagamentosFrame = listarPagamentosFrame;
-        this.renderer = new BotaoCelulaRenderer(table);
-
-        // Adicionar listeners para os botões
+        // Adicionar listeners
         renderer.getBtnEditar().addActionListener(this);
         renderer.getBtnDeletar().addActionListener(this);
+        renderer.getBtnVisualizar().addActionListener(this);
     }
-
+    
     @Override
     public Object getCellEditorValue() {
         return "";
@@ -43,24 +43,22 @@ public class BotaoCelulaEditor extends AbstractCellEditor implements TableCellEd
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         this.currentRow = row;
-        log.debug("Editando célula da linha: {}", row);
         return renderer;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        fireEditingStopped();
-        
         JButton source = (JButton) e.getSource();
-
+        
+        // Dispara o evento correspondente na interface
         if(source == renderer.getBtnEditar()){
-            log.info("Pagamento editado na linha: {}", currentRow);
-            listarPagamentosFrame.editarPagamento(currentRow);
+            event.onEdit(currentRow);
         } else if (source == renderer.getBtnDeletar()) {
-            log.info("Pagamento deletado na linha: {}", currentRow);
-            listarPagamentosFrame.deletarPagamento(currentRow);
+            event.onDelete(currentRow);
+        } else if (source == renderer.getBtnVisualizar()) {
+            event.onView(currentRow);
         }
-
+        
         fireEditingStopped();
     }
 }

@@ -2,13 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package br.com.ifba.prg03projetosgcr.transacao.service;
+package br.com.ifba.prg03projetosgcr.pagamento.service;
 
-import br.com.ifba.prg03projetosgcr.transacao.entity.Pagamento;
-import br.com.ifba.prg03projetosgcr.transacao.repository.PagamentoRepository;
+import br.com.ifba.prg03projetosgcr.pagamento.entity.Pagamento;
+import br.com.ifba.prg03projetosgcr.pagamento.repository.PagamentoRepository;
 import br.com.ifba.prg03projetosgcr.cliente.entity.Cliente;
 import br.com.ifba.prg03projetosgcr.cliente.service.ClienteService;
-import br.com.ifba.prg03projetosgcr.transacao.entity.enums.FormaPagamento;
+import br.com.ifba.prg03projetosgcr.pagamento.entity.FormaPagamento;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
