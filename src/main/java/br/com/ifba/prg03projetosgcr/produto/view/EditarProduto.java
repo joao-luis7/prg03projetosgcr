@@ -4,6 +4,8 @@
  */
 package br.com.ifba.prg03projetosgcr.produto.view;
 
+import br.com.ifba.prg03projetosgcr.categoria.controller.CategoriaController;
+import br.com.ifba.prg03projetosgcr.categoria.entity.Categoria;
 import br.com.ifba.prg03projetosgcr.produto.controller.ProdutoController;
 import br.com.ifba.prg03projetosgcr.produto.entity.Produto;
 import javax.swing.JOptionPane;
@@ -21,11 +23,13 @@ public class EditarProduto extends javax.swing.JFrame {
    
     @Autowired
     private ProdutoController produtoController;
+    @Autowired
+    private CategoriaController categoriaController;
 
     private ListarProdutos listarProdutos;
-    
-    // Esta variável guarda o ID original para não criarmos um produto duplicado
     private Produto produtoEmEdicao; 
+    
+    private Categoria categoriaSelecionada;
 
     public void setListarProdutos(ListarProdutos listarProdutos) {
         this.listarProdutos = listarProdutos;
@@ -33,6 +37,7 @@ public class EditarProduto extends javax.swing.JFrame {
     
     public void preencherCampos(Produto produto) {
         this.produtoEmEdicao = produto; // Guarda o produto na memória
+        this.categoriaSelecionada = produto.getCategoria();
         
         // Joga os dados do banco para os campos de texto da tela
         txtNomeProduto.setText(produto.getNome());
@@ -42,6 +47,12 @@ public class EditarProduto extends javax.swing.JFrame {
         // Formata os preços com ponto para não dar erro se o usuário for editar
         txtPrecoUnidade.setText(String.valueOf(produto.getPrecoUnidade()));
         txtPrecoCusto.setText(String.valueOf(produto.getPrecoCusto()));
+        
+        if (this.categoriaSelecionada != null) {
+            txtCategoria.setText(this.categoriaSelecionada.getNome());
+        } else {
+            txtCategoria.setText("Sem Categoria");
+        }
         
         // Marca a bolinha de status correta
         if (produto.isAtivo()) {
@@ -129,6 +140,9 @@ public class EditarProduto extends javax.swing.JFrame {
         lblStatus = new javax.swing.JLabel();
         rbtnAtivar = new javax.swing.JRadioButton();
         rbtnDesativar = new javax.swing.JRadioButton();
+        lblEstoqueAtual1 = new javax.swing.JLabel();
+        btnCategoria = new javax.swing.JButton();
+        txtCategoria = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -191,6 +205,15 @@ public class EditarProduto extends javax.swing.JFrame {
         buttonGroup1.add(rbtnDesativar);
         rbtnDesativar.setText("Desativar");
 
+        lblEstoqueAtual1.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        lblEstoqueAtual1.setText("Categoria:");
+
+        btnCategoria.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
+        btnCategoria.setText("Selecionar Categoria");
+        btnCategoria.addActionListener(this::btnCategoriaActionPerformed);
+
+        txtCategoria.setEditable(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -199,19 +222,16 @@ public class EditarProduto extends javax.swing.JFrame {
                 .addGap(55, 55, 55)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(lblDescricao)
-                                    .addComponent(lblTituloEditarProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lblNomeProduto)
-                                    .addComponent(txtDescricao, javax.swing.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
-                                    .addComponent(txtNomeProduto))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(lblEstoque)
-                                    .addComponent(txtEstoque, javax.swing.GroupLayout.PREFERRED_SIZE, 398, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(rbtnAtivar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rbtnDesativar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(lblDescricao)
+                                .addComponent(lblTituloEditarProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblNomeProduto)
+                                .addComponent(txtDescricao, javax.swing.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
+                                .addComponent(txtNomeProduto))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(lblEstoque)
+                                .addComponent(txtEstoque, javax.swing.GroupLayout.PREFERRED_SIZE, 398, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 152, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtPrecoSugerido, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -229,58 +249,73 @@ public class EditarProduto extends javax.swing.JFrame {
                                     .addGap(73, 73, 73)))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblStatus)
+                            .addComponent(rbtnAtivar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rbtnDesativar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblPrecoUnidade)
-                            .addComponent(btnConfirmarAlteracoes, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtPrecoUnidade, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblStatus))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(txtCategoria, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(lblEstoqueAtual1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnCategoria)))
+                            .addComponent(btnConfirmarAlteracoes, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(101, 101, 101)
-                .addComponent(lblTituloCalculeLucro)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblPrecoCusto)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtPrecoCusto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblMargemLucro)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtMargemLucro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblPrecoSugerido)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtPrecoSugerido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(lblTituloEditarProduto)
-                .addGap(34, 34, 34)
-                .addComponent(lblNomeProduto)
-                .addGap(5, 5, 5)
-                .addComponent(txtNomeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblDescricao)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblEstoque)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtEstoque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblStatus)
-                .addGap(4, 4, 4)
-                .addComponent(rbtnAtivar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(rbtnDesativar)
-                .addGap(18, 18, 18)
-                .addComponent(lblPrecoUnidade)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtPrecoUnidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
-                .addComponent(btnConfirmarAlteracoes)
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(101, 101, 101)
+                        .addComponent(lblTituloCalculeLucro)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblPrecoCusto)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPrecoCusto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblMargemLucro)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtMargemLucro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblPrecoSugerido)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPrecoSugerido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(lblTituloEditarProduto)
+                        .addGap(34, 34, 34)
+                        .addComponent(lblNomeProduto)
+                        .addGap(5, 5, 5)
+                        .addComponent(txtNomeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblDescricao)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblEstoque)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtEstoque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblEstoqueAtual1)
+                            .addComponent(btnCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblStatus)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rbtnAtivar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rbtnDesativar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblPrecoUnidade)
+                        .addGap(4, 4, 4)
+                        .addComponent(txtPrecoUnidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnConfirmarAlteracoes)))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
 
         pack();
@@ -362,6 +397,21 @@ public class EditarProduto extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtPrecoUnidadeFocusGained
 
+    private void btnCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategoriaActionPerformed
+        // TODO add your handling code here:
+        CategoriasDisponiveis dialog = new CategoriasDisponiveis(this, true);
+        dialog.setListaCategorias(categoriaController.findAllAtivas());
+        dialog.setVisible(true);
+
+        // Quando o dialog fechar, pega a categoria que o usuário clicou
+        Categoria selecionada = dialog.getCategoriaSelecionada();
+
+        if (selecionada != null) {
+            this.categoriaSelecionada = selecionada; // Atualiza a variável da memória
+            txtCategoria.setText(selecionada.getNome()); // Atualiza o texto na tela
+        }
+    }//GEN-LAST:event_btnCategoriaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -388,10 +438,12 @@ public class EditarProduto extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCategoria;
     private javax.swing.JButton btnConfirmarAlteracoes;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel lblDescricao;
     private javax.swing.JLabel lblEstoque;
+    private javax.swing.JLabel lblEstoqueAtual1;
     private javax.swing.JLabel lblMargemLucro;
     private javax.swing.JLabel lblNomeProduto;
     private javax.swing.JLabel lblPrecoCusto;
@@ -402,6 +454,7 @@ public class EditarProduto extends javax.swing.JFrame {
     private javax.swing.JLabel lblTituloEditarProduto;
     private javax.swing.JRadioButton rbtnAtivar;
     private javax.swing.JRadioButton rbtnDesativar;
+    private javax.swing.JTextField txtCategoria;
     private javax.swing.JTextField txtDescricao;
     private javax.swing.JTextField txtEstoque;
     private javax.swing.JTextField txtMargemLucro;

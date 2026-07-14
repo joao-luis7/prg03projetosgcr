@@ -4,6 +4,9 @@
  */
 package br.com.ifba.prg03projetosgcr.produto.view;
 
+import br.com.ifba.prg03projetosgcr.categoria.controller.CategoriaController;
+import br.com.ifba.prg03projetosgcr.categoria.entity.Categoria;
+import br.com.ifba.prg03projetosgcr.config.SpringContext;
 import br.com.ifba.prg03projetosgcr.produto.controller.ProdutoController;
 import br.com.ifba.prg03projetosgcr.produto.entity.Produto;
 import javax.swing.JOptionPane;
@@ -19,6 +22,9 @@ import org.springframework.stereotype.Component;
 public class CadastrarProduto extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CadastrarProduto.class.getName());
+    private Categoria categoriaSelecionada;
+    
+    private final CategoriaController categoriaController = SpringContext.getBean(CategoriaController.class);
     
     private ListarProdutos listarProdutos;
     @Autowired
@@ -104,6 +110,9 @@ public class CadastrarProduto extends javax.swing.JFrame {
         lblStatus = new javax.swing.JLabel();
         rbtnAtivar = new javax.swing.JRadioButton();
         rbtnDesativar = new javax.swing.JRadioButton();
+        lblEstoqueAtual1 = new javax.swing.JLabel();
+        btnCategoria = new javax.swing.JButton();
+        txtCategoria = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -167,6 +176,15 @@ public class CadastrarProduto extends javax.swing.JFrame {
         buttonGroup1.add(rbtnDesativar);
         rbtnDesativar.setText("Desativar");
 
+        lblEstoqueAtual1.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+        lblEstoqueAtual1.setText("Categoria:");
+
+        btnCategoria.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
+        btnCategoria.setText("Selecionar Categoria");
+        btnCategoria.addActionListener(this::btnCategoriaActionPerformed);
+
+        txtCategoria.setEditable(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -186,8 +204,12 @@ public class CadastrarProduto extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(lblEstoqueAtual)
                                     .addComponent(txtEstoqueAtual, javax.swing.GroupLayout.PREFERRED_SIZE, 398, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(lblStatus)
-                            .addComponent(rbtnAtivar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(txtCategoria, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(lblEstoqueAtual1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnCategoria))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 152, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtPrecoSugerido, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -205,6 +227,8 @@ public class CadastrarProduto extends javax.swing.JFrame {
                                     .addGap(73, 73, 73)))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblStatus)
+                            .addComponent(rbtnAtivar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(rbtnDesativar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnCadastrarProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtPrecoUnidade, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -245,19 +269,25 @@ public class CadastrarProduto extends javax.swing.JFrame {
                         .addComponent(lblEstoqueAtual)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtEstoqueAtual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblStatus)
+                        .addGap(15, 15, 15)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblEstoqueAtual1)
+                            .addComponent(btnCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rbtnAtivar)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addComponent(lblStatus)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rbtnAtivar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rbtnDesativar)
                 .addGap(18, 18, 18)
                 .addComponent(lblPrecoUnidade)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtPrecoUnidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(59, 59, 59)
+                .addGap(18, 18, 18)
                 .addComponent(btnCadastrarProduto)
-                .addGap(56, 56, 56))
+                .addGap(20, 20, 20))
         );
 
         pack();
@@ -291,6 +321,11 @@ public class CadastrarProduto extends javax.swing.JFrame {
                     "Aviso", JOptionPane.WARNING_MESSAGE);
                 return;
             }
+            
+            if (this.categoriaSelecionada == null) {
+                JOptionPane.showMessageDialog(this, "Por favor, selecione uma categoria para o produto.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
             // Tratamento seguro de Números (Troca vírgula por ponto automaticamente)
             int estoque = Integer.parseInt(estoqueTexto);
@@ -313,6 +348,7 @@ public class CadastrarProduto extends javax.swing.JFrame {
             produto.setPrecoUnidade(precoUnidade);
             produto.setPrecoCusto(precoCusto);
             produto.setAtivo(ativo);
+            produto.setCategoria(this.categoriaSelecionada);
 
             produtoController.save(produto);
 
@@ -356,6 +392,29 @@ public class CadastrarProduto extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPrecoUnidadeActionPerformed
 
+    private void btnCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategoriaActionPerformed
+        // TODO add your handling code here:
+        CategoriasDisponiveis dialog = new CategoriasDisponiveis(this, true);
+
+        // Busca as categorias ativas no banco e passa para preencher a tabela do JDialog
+        dialog.setListaCategorias(categoriaController.findAllAtivas());
+
+        dialog.setVisible(true);
+
+        Categoria selecionada = dialog.getCategoriaSelecionada();
+
+        // verifica se ele realmente selecionou algo (ele poderia ter só clicado no 'X' para fechar a janela)
+        if (selecionada != null) {
+
+            // Guarda na variável da tela para usar depois na hora de salvar o produto
+            this.categoriaSelecionada = selecionada;
+
+            // Atualiza algum campo visual na sua tela para o usuário saber que deu certo!
+            // (Substitua 'txtCategoriaNome' pelo nome do JLabel ou JTextField que você colocou na tela)
+            txtCategoria.setText(selecionada.getNome());
+        }
+    }//GEN-LAST:event_btnCategoriaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -383,10 +442,12 @@ public class CadastrarProduto extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrarProduto;
+    private javax.swing.JButton btnCategoria;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel lblCalculeLucro;
     private javax.swing.JLabel lblDescricao;
     private javax.swing.JLabel lblEstoqueAtual;
+    private javax.swing.JLabel lblEstoqueAtual1;
     private javax.swing.JLabel lblMargemLucro;
     private javax.swing.JLabel lblNomeProduto;
     private javax.swing.JLabel lblPrecoCusto;
@@ -396,6 +457,7 @@ public class CadastrarProduto extends javax.swing.JFrame {
     private javax.swing.JLabel lblTituloCadastrarProduto;
     private javax.swing.JRadioButton rbtnAtivar;
     private javax.swing.JRadioButton rbtnDesativar;
+    private javax.swing.JTextField txtCategoria;
     private javax.swing.JTextField txtDescricao;
     private javax.swing.JTextField txtEstoqueAtual;
     private javax.swing.JTextField txtMargemLucro;

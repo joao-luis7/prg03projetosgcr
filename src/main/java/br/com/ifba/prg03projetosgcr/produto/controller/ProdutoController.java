@@ -57,4 +57,9 @@ public class ProdutoController {
         log.debug("Requisição recebida para buscar todos os produtos ativos");
         return produtoService.findAllAtivos();
     }
+    
+    public List<Produto> findAllAtivosComCategoria() {
+        log.debug("A receber requisição para buscar produtos ativos com categoria para preenchimento de tabela");
+        return produtoService.findAllAtivosComCategoria();
+    }
 }

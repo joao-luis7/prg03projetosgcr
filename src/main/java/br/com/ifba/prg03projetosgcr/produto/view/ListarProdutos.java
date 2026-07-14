@@ -82,6 +82,7 @@ public class ListarProdutos extends javax.swing.JFrame {
         }
 
         produtosCadastrados = produtoController.findByNome(nomeBusca);
+        List<Produto> lista = produtoController.findAllAtivosComCategoria();
             
         DefaultTableModel modelo = (DefaultTableModel) tblProdutos.getModel();
         modelo.setRowCount(0); // Limpa as linhas atuais
@@ -89,12 +90,14 @@ public class ListarProdutos extends javax.swing.JFrame {
         for (Produto p : produtosCadastrados) {
             // Se o produto estiver inativo, vamos dar um aviso visual no estoque
             String textoEstoque = p.isAtivo() ? String.valueOf(p.getQuantidadeEstoque()) : "INATIVO";
+            String nomeCategoria = (p.getCategoria() != null) ? p.getCategoria().getNome() : "Sem Categoria";
             
             modelo.addRow(new Object[]{
                 p.getId(),
                 p.getNome(),
                 "R$ " + String.format("%.2f", p.getPrecoUnidade()),
                 textoEstoque,
+                nomeCategoria,
                 "" // Coluna de ações
             });
         }
@@ -144,7 +147,10 @@ public class ListarProdutos extends javax.swing.JFrame {
             }     
         };
         
-        int colunaAcoesIdx = 4;
+        int colunaAcoesIdx = 5;
+        
+        tblProdutos.getColumnModel().getColumn(5).setPreferredWidth(110); 
+        tblProdutos.getColumnModel().getColumn(5).setMinWidth(110);
         
         tblProdutos.getColumnModel().getColumn(colunaAcoesIdx).setCellRenderer(new GenericBotaoCelulaRenderer());
         tblProdutos.getColumnModel().getColumn(colunaAcoesIdx).setCellEditor(new GenericBotaoCelulaEditor(evento, false));
@@ -182,13 +188,13 @@ public class ListarProdutos extends javax.swing.JFrame {
         tblProdutos.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
         tblProdutos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Produto", "Preço Unit.", "Estoque", "Ações"
+                "ID", "Produto", "Preço Unit.", "Estoque", "Categoria", "Ações"
             }
         ));
         jScrollPane1.setViewportView(tblProdutos);

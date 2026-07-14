@@ -4,6 +4,7 @@
  */
 package br.com.ifba.prg03projetosgcr.dashboard.view;
 
+import br.com.ifba.prg03projetosgcr.categoria.view.ListarCategorias;
 import br.com.ifba.prg03projetosgcr.cliente.view.ListarClientes;
 import br.com.ifba.prg03projetosgcr.produto.view.ListarProdutos;
 import br.com.ifba.prg03projetosgcr.pagamento.view.ListarPagamentos;
@@ -47,11 +48,11 @@ public class Dashboard extends javax.swing.JFrame {
         btnVendas = new javax.swing.JButton();
         btnNovaVenda = new javax.swing.JButton();
         btnProdutos = new javax.swing.JButton();
+        btnCategorias = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 0));
-        setPreferredSize(new java.awt.Dimension(964, 557));
 
         pnlMenuLateral.setBackground(new java.awt.Color(208, 208, 208));
         pnlMenuLateral.setForeground(new java.awt.Color(153, 153, 153));
@@ -86,6 +87,11 @@ public class Dashboard extends javax.swing.JFrame {
         btnProdutos.setText("Produtos");
         btnProdutos.addActionListener(this::btnProdutosActionPerformed);
 
+        btnCategorias.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
+        btnCategorias.setForeground(new java.awt.Color(51, 51, 51));
+        btnCategorias.setText("Categorias");
+        btnCategorias.addActionListener(this::btnCategoriasActionPerformed);
+
         javax.swing.GroupLayout pnlMenuLateralLayout = new javax.swing.GroupLayout(pnlMenuLateral);
         pnlMenuLateral.setLayout(pnlMenuLateralLayout);
         pnlMenuLateralLayout.setHorizontalGroup(
@@ -93,6 +99,7 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(pnlMenuLateralLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(pnlMenuLateralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnProdutos, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnNovaVenda, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnVendas, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -116,7 +123,9 @@ public class Dashboard extends javax.swing.JFrame {
                 .addComponent(btnVendas)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnProdutos)
-                .addContainerGap(312, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnCategorias)
+                .addContainerGap(274, Short.MAX_VALUE))
         );
 
         jPanel1.setBackground(new java.awt.Color(214, 214, 214));
@@ -238,6 +247,23 @@ public class Dashboard extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_btnProdutosActionPerformed
 
+    private void btnCategoriasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategoriasActionPerformed
+        // TODO add your handling code here:
+                this.setVisible(false);
+        
+        ListarCategorias telaCategorias = SpringContext.getBean(ListarCategorias.class);
+        telaCategorias.setLocationRelativeTo(null);
+        telaCategorias.setVisible(true);
+        
+        telaCategorias.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e){
+                //qnd a janela filha for fechada o dashboard abre novamnete
+                Dashboard.this.setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_btnCategoriasActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -264,6 +290,7 @@ public class Dashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCategorias;
     private javax.swing.JButton btnClientes;
     private javax.swing.JButton btnDashboard;
     private javax.swing.JButton btnNovaVenda;

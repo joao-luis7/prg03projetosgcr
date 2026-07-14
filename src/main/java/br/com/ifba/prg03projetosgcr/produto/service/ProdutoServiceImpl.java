@@ -83,4 +83,9 @@ public class ProdutoServiceImpl implements ProdutoService{
         return produtoRepository.findByAtivoTrue(); 
     }
     
+    @Override
+    public List<Produto> findAllAtivosComCategoria() {
+        log.debug("A listar todos os produtos ativos trazendo as suas respectivas categorias");
+        return produtoRepository.findAllComCategoriaByAtivoTrue();
+    }
 }
