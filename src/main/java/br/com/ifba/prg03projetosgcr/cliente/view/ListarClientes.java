@@ -85,6 +85,15 @@ public class ListarClientes extends javax.swing.JFrame {
         atualizarTabela();
     }
     
+    @Override
+    public void setVisible(boolean visible) {
+        // Se a tela estiver sendo solicitada para aparecer, atualiza a tabela primeiro
+        if (visible) {
+            atualizarTabela();
+        }
+        super.setVisible(visible);
+    }
+    
     //agora ele pesquisa por nome, se nao houver nome na pesquisa ele lista todos
     public void atualizarTabela(){
         String nomeBusca = txtPesquisa.getText().trim();
@@ -97,6 +106,10 @@ public class ListarClientes extends javax.swing.JFrame {
         modelo.setRowCount(0); //limpa as linhas atuais
         
         for (Cliente c : clientesCadastrados){
+            if (c.getNome().equalsIgnoreCase("Não Identificado")) {
+                continue; // Pula este registro, ele não vai para a tabela 
+            }
+            
             //adiciona as colunas: cliente, divida, contato e acoes
             modelo.addRow(new Object[]{
                 c.getNome(),

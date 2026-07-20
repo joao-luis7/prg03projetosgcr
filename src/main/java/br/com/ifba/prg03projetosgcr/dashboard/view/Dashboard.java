@@ -28,6 +28,7 @@ public class Dashboard extends javax.swing.JFrame {
     public Dashboard() {        
         initComponents();
         
+        this.setLocationRelativeTo(null);
         // Pinta a camada de fundo real da janela (Content Pane)
         getContentPane().setBackground(new java.awt.Color(214, 214, 214));
     }

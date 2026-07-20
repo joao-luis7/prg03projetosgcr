@@ -44,6 +44,31 @@ public class VendaServiceImpl implements VendaService{
        
         validatorUtil.validateListaNotEmpty(venda.getItens(), "O carrinho está vazio, adicione produtos antes de finalizar");
         
+        //LOGICA AUTOMATICA: CLIENTE NÃO IDENTIFICADO
+        if (venda.getCliente() == null) {
+            log.debug("Venda sem cliente. Vinculando 'Não Identificado'...");
+            
+            // Busca se o cliente invisível já existe no banco
+            List<Cliente> clientesPadrao = clienteService.findByNome("Não Identificado");
+            Cliente clientePadrao;
+            
+            if (clientesPadrao.isEmpty()) {
+                // Se não existir, o sistema cria ele sozinho silenciosamente
+                clientePadrao = new Cliente();
+                clientePadrao.setNome("Não Identificado");
+                clientePadrao.setTelefone("00000000000");
+                clientePadrao.setAtivo(true);
+                
+                clientePadrao = clienteService.save(clientePadrao);
+                log.info("Cliente 'Não Identificado' criado no banco de dados automaticamente.");
+            } else {
+                clientePadrao = clientesPadrao.get(0);
+            }
+            
+            // Vincula à venda atual
+            venda.setCliente(clientePadrao);
+        }
+        
         double totalVenda = 0.0;
         
         //Processa cada item do carrinho

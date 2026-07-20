@@ -167,13 +167,13 @@ public class PagamentoServiceImpl implements PagamentoService{
     
     @Override
     public Double calcularFaturamentoUltimos30Dias() {
-        // 1. Descobre a data e hora de exatos 30 dias atrás
+        // Descobre a data e hora de exatos 30 dias atrás
         java.time.LocalDateTime trintaDiasAtras = java.time.LocalDateTime.now().minusDays(30);
         
-        // 2. Manda o banco somar
+        // Manda o banco somar
         Double soma = pagamentoRepository.somarFaturamentoDesde(trintaDiasAtras);
         
-        // 3. Se for null (zero vendas no período), devolve 0.0
+        //Se for null (zero vendas no período), devolve 0.0
         return soma != null ? soma : 0.0;
     }
 }

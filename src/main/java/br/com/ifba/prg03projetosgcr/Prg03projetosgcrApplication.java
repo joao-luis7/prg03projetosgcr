@@ -1,15 +1,9 @@
 package br.com.ifba.prg03projetosgcr;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import br.com.ifba.prg03projetosgcr.funcionario.view.TelaLogin; 
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import br.com.ifba.prg03projetosgcr.cliente.view.ListarClientes;
-import br.com.ifba.prg03projetosgcr.produto.view.ListarProdutos;
-import br.com.ifba.prg03projetosgcr.pagamento.view.ListarPagamentos;
-import br.com.ifba.prg03projetosgcr.venda.view.FrenteDeCaixa;
-import br.com.ifba.prg03projetosgcr.venda.view.ListarVendas;
-import br.com.ifba.prg03projetosgcr.dashboard.view.Dashboard;
 
 @SpringBootApplication
 public class Prg03projetosgcrApplication {
@@ -22,10 +16,10 @@ public class Prg03projetosgcrApplication {
                 .run(args);
             
             //recupera a instancia da tela gerenciada pelo spring
-            Dashboard telaPrincipal = context.getBean(Dashboard.class);
+            TelaLogin telaLogin = context.getBean(TelaLogin.class);
             
             //exibe a tela
-            telaPrincipal.setVisible(true);
+            telaLogin.setVisible(true);
 	}
 
 }

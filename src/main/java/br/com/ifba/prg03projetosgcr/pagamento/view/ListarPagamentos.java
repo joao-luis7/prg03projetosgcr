@@ -238,7 +238,7 @@ public class ListarPagamentos extends javax.swing.JFrame {
         btnRegistrarPagamento.addActionListener(this::btnRegistrarPagamentoActionPerformed);
 
         lblTituloTotal.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
-        lblTituloTotal.setText("Total Recebido:");
+        lblTituloTotal.setText("Total Recebido nos últimos 30 dias:");
 
         lblValorTotal.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
         lblValorTotal.setText("R$ ");

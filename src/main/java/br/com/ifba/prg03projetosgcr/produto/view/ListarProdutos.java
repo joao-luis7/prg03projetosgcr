@@ -74,6 +74,15 @@ public class ListarProdutos extends javax.swing.JFrame {
         atualizarTabela();
     }
     
+    @Override
+    public void setVisible(boolean visible) {
+        // Atualiza a grid para que o estoque diminua visualmente após uma venda
+        if (visible) {
+            atualizarTabela();
+        }
+        super.setVisible(visible);
+    }
+    
     public void atualizarTabela() {
         String nomeBusca = txtPesquisar.getText().trim();
         

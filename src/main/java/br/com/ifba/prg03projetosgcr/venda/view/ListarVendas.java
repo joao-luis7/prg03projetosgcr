@@ -47,6 +47,15 @@ public class ListarVendas extends javax.swing.JFrame {
         carregarTabelaVendas();
     }
     
+    @Override
+    public void setVisible(boolean visible) {
+        // Se a tela for aparecer, busca as novas vendas no banco
+        if (visible) {
+            carregarTabelaVendas();
+        }
+        super.setVisible(visible);
+    }
+    
     private void configurarColunaAcoes() {
         // Cria os eventos para os botões desta tela (Visualizar e Deletar)
         TableActionEvent eventoVenda = new TableActionEvent() {
@@ -168,7 +177,6 @@ public class ListarVendas extends javax.swing.JFrame {
         lblTitulo = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblVendas = new javax.swing.JTable();
-        btnNovaVenda = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -200,12 +208,6 @@ public class ListarVendas extends javax.swing.JFrame {
             tblVendas.getColumnModel().getColumn(6).setPreferredWidth(110);
         }
 
-        btnNovaVenda.setBackground(new java.awt.Color(0, 102, 51));
-        btnNovaVenda.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
-        btnNovaVenda.setForeground(new java.awt.Color(255, 255, 255));
-        btnNovaVenda.setText("Nova Venda");
-        btnNovaVenda.addActionListener(this::btnNovaVendaActionPerformed);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -215,8 +217,7 @@ public class ListarVendas extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(47, 47, 47)
                         .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnNovaVenda))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(47, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 880, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -225,10 +226,8 @@ public class ListarVendas extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnNovaVenda)
-                    .addComponent(lblTitulo))
+                .addGap(31, 31, 31)
+                .addComponent(lblTitulo)
                 .addGap(39, 39, 39)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(57, Short.MAX_VALUE))
@@ -236,14 +235,6 @@ public class ListarVendas extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnNovaVendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovaVendaActionPerformed
-        frenteDeCaixa.setVisible(true);
-        
-        frenteDeCaixa.toFront();
-        
-        this.dispose();
-    }//GEN-LAST:event_btnNovaVendaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -271,7 +262,6 @@ public class ListarVendas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnNovaVenda;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JTable tblVendas;

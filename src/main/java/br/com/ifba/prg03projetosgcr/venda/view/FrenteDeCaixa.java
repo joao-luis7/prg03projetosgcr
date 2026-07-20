@@ -239,6 +239,13 @@ public class FrenteDeCaixa extends javax.swing.JFrame {
             String opcaoSelecionada = cbxFormaPagamento.getSelectedItem().toString();
             FormaPagamento formaEscolhida = FormaPagamento.valueOf(opcaoSelecionada);
             
+            if (formaEscolhida == FormaPagamento.FIADO && vendaAtual.getCliente() == null) {
+                JOptionPane.showMessageDialog(this, 
+                    "Para vendas na modalidade FIADO, é obrigatório informar um cliente cadastrado!", 
+                    "Atenção", JOptionPane.WARNING_MESSAGE);
+                return; // Trava a venda aqui e não envia para o banco
+            }
+            
             vendaAtual.setFormaPagamento(formaEscolhida);
             
             //aciona o controller para salvar no banco
@@ -251,7 +258,13 @@ public class FrenteDeCaixa extends javax.swing.JFrame {
             vendaAtual = new Venda();
             btnNomeCliente.setText("Informar Cliente");
             ((DefaultTableModel) tblCarrinho.getModel()).setNumRows(0);
+            // Volta o combobox para a primeira opção de pagamento padrão
+            if (cbxFormaPagamento.getItemCount() > 0) {
+                cbxFormaPagamento.setSelectedIndex(0); 
+            }
+            
             atualizarTotalVisor();
+            
         } catch (Exception ex){
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", 
                         JOptionPane.ERROR_MESSAGE);
@@ -259,7 +272,37 @@ public class FrenteDeCaixa extends javax.swing.JFrame {
     }//GEN-LAST:event_btnFinalizarVendaActionPerformed
 
     private void btnCancelarVendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarVendaActionPerformed
-        // TODO add your handling code here:
+        
+        // Se o carrinho ja estiver vazio e sem cliente, não faz nada
+        if (vendaAtual.getItens().isEmpty() && vendaAtual.getCliente() == null) {
+            return;
+        }
+        
+        // Confirmação para evitar que o caixa apague o pedido sem querer
+        int resposta = JOptionPane.showConfirmDialog(this, 
+            "Tem certeza que deseja cancelar o pedido em andamento? O carrinho será esvaziado.", 
+            "Cancelar Venda Atual", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            
+        if (resposta == JOptionPane.YES_OPTION) {
+            
+            // Zera a venda atual 
+            vendaAtual = new Venda();
+            
+            // Limpa o nome do cliente no botão
+            btnNomeCliente.setText("Informar Cliente");
+            
+            // Esvazia a tabela
+            ((DefaultTableModel) tblCarrinho.getModel()).setNumRows(0);
+            
+            // Volta a forma de pagamento para a padrão
+            if (cbxFormaPagamento.getItemCount() > 0) {
+                cbxFormaPagamento.setSelectedIndex(0);
+            }
+            
+            // Zera o valor total
+            atualizarTotalVisor();
+        }
+        
     }//GEN-LAST:event_btnCancelarVendaActionPerformed
 
     private void cbxFormaPagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxFormaPagamentoActionPerformed
