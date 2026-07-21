@@ -16,4 +16,6 @@ public interface VendaService {
     List<Venda> findAll();
     void cancelarVenda(Long id);
     Venda findByIdComItens(Long id);
+    Double calcularFaturamentoDoDia();
+    Long contarVendasDoDia();
 }

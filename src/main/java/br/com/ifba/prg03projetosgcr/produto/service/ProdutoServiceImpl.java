@@ -88,4 +88,12 @@ public class ProdutoServiceImpl implements ProdutoService{
         log.debug("A listar todos os produtos ativos trazendo as suas respectivas categorias");
         return produtoRepository.findAllComCategoriaByAtivoTrue();
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<Produto> listarProdutosComEstoqueBaixo() {
+        int ESTOQUE_MINIMO_CRITICO = 5; 
+        log.debug("Buscando produtos com estoque igual ou menor que {}", ESTOQUE_MINIMO_CRITICO);
+        return produtoRepository.findByQuantidadeEstoqueLessThanEqualAndAtivoTrue(ESTOQUE_MINIMO_CRITICO);
+    }
 }

@@ -15,6 +15,7 @@ import br.com.ifba.prg03projetosgcr.venda.entity.Venda;
 import br.com.ifba.prg03projetosgcr.venda.repository.VendaRepository;
 import br.com.ifba.prg03projetosgcr.infrastructure.exception.RegraNegocioException;
 import br.com.ifba.prg03projetosgcr.util.ValidatorUtil;
+import java.time.LocalDate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -176,5 +177,27 @@ public class VendaServiceImpl implements VendaService{
                     log.warn("Busca com itens mal-sucedida: Venda ID {} não existe.", id);
                     return new IllegalArgumentException("Venda não encontrada!");
                 });
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public Double calcularFaturamentoDoDia() {
+        log.debug("Calculando faturamento diário");
+        LocalDateTime inicio = LocalDate.now().atStartOfDay();
+        LocalDateTime fim = LocalDate.now().plusDays(1).atStartOfDay();
+        
+        Double faturamento = vendaRepository.calcularFaturamentoDoDia(inicio, fim);
+        return faturamento != null ? faturamento : 0.0;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Long contarVendasDoDia() {
+        log.debug("Contando a quantidade de vendas do dia");
+        LocalDateTime inicio = LocalDate.now().atStartOfDay();
+        LocalDateTime fim = LocalDate.now().plusDays(1).atStartOfDay();
+        
+        Long quantidade = vendaRepository.contarVendasDoDia(inicio, fim);
+        return quantidade != null ? quantidade : 0L;
     }
 }

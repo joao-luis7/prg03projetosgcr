@@ -6,6 +6,7 @@ package br.com.ifba.prg03projetosgcr.venda.repository;
 
 import br.com.ifba.prg03projetosgcr.venda.entity.enums.StatusVenda;
 import br.com.ifba.prg03projetosgcr.venda.entity.Venda;
+import java.time.LocalDateTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -41,4 +42,12 @@ public interface VendaRepository extends JpaRepository<Venda, Long> {
     // preventivo caso a View exija o relatório completo de Cliente + Itens da Venda
     @Query("SELECT v FROM Venda v JOIN FETCH v.cliente JOIN FETCH v.itens WHERE v.id = :id")
     Optional<Venda> findByIdComClienteEItens(@Param("id") Long id);
+    
+    // Calcula o faturamento apenas do dia de hoje
+    @Query("SELECT SUM(v.valorTotal) FROM Venda v WHERE v.dataHora >= :inicio AND v.dataHora < :fim")
+    Double calcularFaturamentoDoDia(@Param("inicio") LocalDateTime inicio, @Param("fim") LocalDateTime fim);
+
+    // Conta a quantidade total de vendas (pedidos) do dia de hoje
+    @Query("SELECT COUNT(v) FROM Venda v WHERE v.dataHora >= :inicio AND v.dataHora < :fim")
+    Long contarVendasDoDia(@Param("inicio") LocalDateTime inicio, @Param("fim") LocalDateTime fim);
 }

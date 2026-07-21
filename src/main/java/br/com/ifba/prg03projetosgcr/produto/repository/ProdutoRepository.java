@@ -25,4 +25,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long>{
         
         @EntityGraph(attributePaths = {"categoria"})
         List<Produto> findAll();
+        
+        List<Produto> findByQuantidadeEstoqueLessThanEqualAndAtivoTrue(int estoqueMinimo);
 }

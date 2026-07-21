@@ -1,4 +1,4 @@
-/*
+    /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
@@ -119,5 +119,15 @@ public class ClienteServiceImpl implements ClienteService{
         
         log.info("Saldo do cliente ID: {} atualizado com sucesso.", id);
     }
-
+    
+    @Override
+    @Transactional(readOnly = true)
+    public Long contarClientesAtivosIdentificados() {
+        log.debug("Contando o total de clientes ativos (excluindo balcão/não identificado)");
+        // Define exatamente qual é o nome do cliente que não deve entrar na contagem
+        String CLIENTE_NAO_IDENTIFICADO = "Não Identificado"; 
+        
+        Long total = clienteRepository.countByAtivoTrueAndNomeNot(CLIENTE_NAO_IDENTIFICADO);
+        return total != null ? total : 0L;
+    }
 }

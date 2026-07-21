@@ -19,4 +19,5 @@ public interface ProdutoService {
     List<Produto> findByNome(String nome);
     List<Produto> findAllAtivos();
     List<Produto> findAllAtivosComCategoria();
+    List<Produto> listarProdutosComEstoqueBaixo();
 }

@@ -26,4 +26,6 @@ public interface ClienteService {
     void delete (Long id);
     
     void atualizarSaldo(Long id, double novoValor);
+    
+    Long contarClientesAtivosIdentificados();
 }
