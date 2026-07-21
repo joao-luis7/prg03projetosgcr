@@ -186,7 +186,13 @@ public class VendaServiceImpl implements VendaService{
         LocalDateTime inicio = LocalDate.now().atStartOfDay();
         LocalDateTime fim = LocalDate.now().plusDays(1).atStartOfDay();
         
-        Double faturamento = vendaRepository.calcularFaturamentoDoDia(inicio, fim);
+        // Cria a lista com os status que devem entrar no cálculo
+        List<StatusVenda> statusValidos = java.util.Arrays.asList(
+                StatusVenda.ABERTA,
+                StatusVenda.FINALIZADA
+        );
+        
+        Double faturamento = vendaRepository.calcularFaturamentoDoDia(inicio, fim, statusValidos);
         return faturamento != null ? faturamento : 0.0;
     }
 
@@ -197,7 +203,12 @@ public class VendaServiceImpl implements VendaService{
         LocalDateTime inicio = LocalDate.now().atStartOfDay();
         LocalDateTime fim = LocalDate.now().plusDays(1).atStartOfDay();
         
-        Long quantidade = vendaRepository.contarVendasDoDia(inicio, fim);
+        List<StatusVenda> statusValidos = java.util.Arrays.asList(
+                StatusVenda.ABERTA,
+                StatusVenda.FINALIZADA
+        );
+        
+        Long quantidade = vendaRepository.contarVendasDoDia(inicio, fim, statusValidos);
         return quantidade != null ? quantidade : 0L;
     }
 }

@@ -44,10 +44,18 @@ public interface VendaRepository extends JpaRepository<Venda, Long> {
     Optional<Venda> findByIdComClienteEItens(@Param("id") Long id);
     
     // Calcula o faturamento apenas do dia de hoje
-    @Query("SELECT SUM(v.valorTotal) FROM Venda v WHERE v.dataHora >= :inicio AND v.dataHora < :fim")
-    Double calcularFaturamentoDoDia(@Param("inicio") LocalDateTime inicio, @Param("fim") LocalDateTime fim);
+    @Query("SELECT SUM(v.valorTotal) FROM Venda v WHERE v.dataHora >= :inicio AND v.dataHora < :fim AND v.statusVenda IN (:statusList)")
+    Double calcularFaturamentoDoDia(
+        @Param("inicio") LocalDateTime inicio, 
+        @Param("fim") LocalDateTime fim, 
+        @Param("statusList") List<StatusVenda> statusList
+    );
 
     // Conta a quantidade total de vendas (pedidos) do dia de hoje
-    @Query("SELECT COUNT(v) FROM Venda v WHERE v.dataHora >= :inicio AND v.dataHora < :fim")
-    Long contarVendasDoDia(@Param("inicio") LocalDateTime inicio, @Param("fim") LocalDateTime fim);
+    @Query("SELECT COUNT(v) FROM Venda v WHERE v.dataHora >= :inicio AND v.dataHora < :fim AND v.statusVenda IN (:statusList)")
+    Long contarVendasDoDia(
+        @Param("inicio") LocalDateTime inicio, 
+        @Param("fim") LocalDateTime fim, 
+        @Param("statusList") List<StatusVenda> statusList
+    );
 }
